@@ -16,10 +16,21 @@ job("Code analysis, test, build and publish") {
 //        }
 //    }
 
+    host("Build artifacts and a Docker image") {
+        // Before running the scripts, the host machine will log in to
+        // the registries specified in connections.
+        dockerRegistryConnections {
+            // specify connection key
+            +"docker_hub"
+            // multiple connections are supported
+            // +"one_more_connection"
+        }
 
-    container("Gradle test, build and publish to maven registry", "amazoncorretto:17-alpine") {
-        kotlinScript { api ->
-            api.gradlew("test", "publish")
+        dockerBuildPush {
+            labels["vendor"] = "mycompany"
+            tags {
+                +"aaziz993.github.io/cicd-os:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
+            }
         }
     }
 }
