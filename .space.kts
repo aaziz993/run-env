@@ -10,7 +10,6 @@ job("Code analysis, test, build and publish") {
     }
 
     parallel {
-
         host("Build and push a Docker image to Space Packages") {
             dockerBuildPush {
                 // image labels
