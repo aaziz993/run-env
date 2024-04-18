@@ -9,14 +9,23 @@ job("Code analysis, test, build and publish") {
         gitPush { enabled = true }
     }
 
-//    container("Sonarqube continuous inspection of code quality and security", "amazoncorretto:17-alpine") {
-//        env["SONAR_TOKEN"] = "{{ project:sonar_token }}"
-//        kotlinScript { api ->
-//            api.gradlew("sonarqube")
-//        }
-//    }
+    host("Build and push a Docker image to Space Packages") {
+        dockerBuildPush {
+            // image labels
+            labels["vendor"] = "aaziz993.github.io"
+            // to add a raw list of additional build arguments, use
+            // extraArgsForBuildCommand = listOf("...")
+            // to add a raw list of additional push arguments, use
+            // extraArgsForPushCommand = listOf("...")
+            // image tags
+            tags {
+                // use current job run number as a tag - '0.0.run_number'
+                +"aaziz993.registry.jetbrains.space/p/aaziz-93/containers/cicd-os:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
+            }
+        }
+    }
 
-    host("Build artifacts and a Docker image") {
+    host("Build and push a Docker image to DockerHub") {
         // Before running the scripts, the host machine will log in to
         // the registries specified in connections.
         dockerRegistryConnections {
@@ -27,7 +36,7 @@ job("Code analysis, test, build and publish") {
         }
 
         dockerBuildPush {
-            labels["vendor"] = "mycompany"
+            labels["vendor"] = "aaziz993.github.io"
             tags {
                 +"aaziz993.github.io/cicd-os:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
             }

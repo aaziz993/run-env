@@ -1,4 +1,4 @@
-FROM amazoncorretto:17-alpine
+FROM openjdk:17-alpine
 
 MAINTAINER Aziz Atoev <a.atoev93@gmail.com>
 
