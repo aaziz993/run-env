@@ -18,7 +18,7 @@ job("Code analysis, test, build and publish") {
                 // image tags
                 tags {
                     // use current job run number as a tag - '0.0.run_number'
-                    +"aaziz993.registry.jetbrains.space/p/aaziz-93/containers/cicd-os:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
+                    +"aaziz93.registry.jetbrains.space/p/aaziz-93/containers//cicd-os:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
                 }
             }
         }
