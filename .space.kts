@@ -18,7 +18,7 @@ job("Code analysis, test, build and publish") {
                 // image tags
                 tags {
                     // use current job run number as a tag - '0.0.run_number'
-                    +"aaziz93.registry.jetbrains.space/p/aaziz-93/containers//cicd-os:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
+                    +"aaziz93.registry.jetbrains.space/p/aaziz-93/containers/cicd-os:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
                 }
             }
         }
@@ -34,9 +34,9 @@ job("Code analysis, test, build and publish") {
 //            }
 //
 //            dockerBuildPush {
-//                labels["vendor"] = "aaziz993.github.io"
+//                labels["vendor"] = "aaziz993"
 //                tags {
-//                    +"aaziz993.github.io/cicd-os:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
+//                    +"aaziz93/cicd-os:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
 //                }
 //            }
 //        }
