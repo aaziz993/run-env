@@ -1,17 +1,19 @@
-FROM openjdk:17-alpine
+FROM gradle:8.7.0-jdk17-jammy
 
 MAINTAINER Aziz Atoev <a.atoev93@gmail.com>
 
 ENV SDK_HOME /usr/local
 
-RUN apk update --quiet
-RUN apk add --quiet wget tar unzip lib32stdc++6 lib32z1
-RUN apk add --quiet libqt5widgets5 usbutils
+RUN apt-get --quiet update --yes
+RUN apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
+RUN apt-get --quiet install --yes libqt5widgets5 usbutils
 
 # Install Git and dependencies
 RUN dpkg --add-architecture i386 \
- && apk update \
- && apk add --no-cache -y file git curl zip libncurses5:i386 libstdc++6:i386 zlib1g:i386 jq
+ && apt-get update \
+ && apt-get install -y file git curl zip libncurses5:i386 libstdc++6:i386 zlib1g:i386 jq \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists /var/cache/apt
 
 # Gradle
 ENV GRADLE_VERSION 8.5
@@ -46,8 +48,8 @@ RUN echo yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_H
 RUN echo yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.2"
 
 # Install xxd
-RUN apk update && \
-    apk add xxd
+RUN apt-get update && \
+    apt-get install xxd
 
 ENV PATH ${SDK_HOME}/bin:$PATH
 
