@@ -36,8 +36,8 @@ job("Code analysis, test, build and publish") {
             dockerBuildPush {
                 labels["vendor"] = "aaziz93"
                 tags {
-                    +"cicd-os:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
-                    +"cicd-os:latest"
+                    +"cicd-os/cicd-os:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
+                    +"cicd-os/cicd-os:latest"
                 }
             }
         }
