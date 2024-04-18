@@ -4,9 +4,9 @@ MAINTAINER Aziz Atoev <a.atoev93@gmail.com>
 
 ENV SDK_HOME /usr/local
 
-RUN apk update --quiet --yes
-RUN apk add --quiet --yes wget tar unzip lib32stdc++6 lib32z1
-RUN apk add --quiet --yes libqt5widgets5 usbutils
+RUN apk update --quiet
+RUN apk add --quiet wget tar unzip lib32stdc++6 lib32z1
+RUN apk add --quiet libqt5widgets5 usbutils
 
 # Install Git and dependencies
 RUN dpkg --add-architecture i386 \
