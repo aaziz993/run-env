@@ -10,18 +10,20 @@ job("Code analysis, test, build and publish") {
     }
 
     parallel {
-        host("Build and push a Docker image to Space Packages") {
-            dockerBuildPush {
-                // image labels
-                labels["vendor"] = "aaziz993.github.io"
-                // image tags
-                tags {
-                    // use current job run number as a tag - '0.0.run_number'
-                    +"aaziz93.registry.jetbrains.space/p/aaziz-93/containers/cicd-os:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
-                    +"aaziz93.registry.jetbrains.space/p/aaziz-93/containers/cicd-os:latest"
-                }
-            }
-        }
+//        host("Build and push a Docker image to Space Packages") {
+//            dockerBuildPush {
+//                // image labels
+//                labels["vendor"] = "aaziz993.github.io"
+//
+//                val spaceRepository = "aaziz93.registry.jetbrains.space/p/aaziz-93/containers/cicd-os"
+//                // image tags
+//                tags {
+//                    // use current job run number as a tag - '0.0.run_number'
+//                    +"$spaceRepository:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
+//                    +"$spaceRepository:latest"
+//                }
+//            }
+//        }
 
         host("Build and push a Docker image to DockerHub") {
             // Before running the scripts, the host machine will log in to
@@ -35,9 +37,11 @@ job("Code analysis, test, build and publish") {
 
             dockerBuildPush {
                 labels["vendor"] = "aaziz93"
+
+                val dockerHubRepository = "aaziz93/cicd-os"
                 tags {
-                    +"aaziz93/cicd-os/cicd-os:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
-                    +"aaziz93/cicd-os/cicd-os:latest"
+                    +"$dockerHubRepository:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
+                    +"$dockerHubRepository:latest"
                 }
             }
         }
