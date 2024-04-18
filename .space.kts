@@ -38,9 +38,11 @@ job("Code analysis, test, build and publish") {
             dockerBuildPush {
                 labels["vendor"] = "aaziz93"
 
-                val dockerHubRepository = "aaziz93/cicd-os"
+                val dockerHubRepository = "cicd-os"
                 tags {
+                    +"aaziz93/$dockerHubRepository:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
                     +"$dockerHubRepository:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
+                    +"aaziz93/$dockerHubRepository:latest"
                     +"$dockerHubRepository:latest"
                 }
             }
