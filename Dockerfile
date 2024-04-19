@@ -26,5 +26,4 @@ RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager "build-tools;${ANDROID_
 
 # Install xxd and gnupg
 RUN apt-get update && \
-    apt-get install xxd && \
-    apt-get install gnupg
+    apt-get install xxd gnupg
