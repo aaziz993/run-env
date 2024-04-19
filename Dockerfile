@@ -26,12 +26,12 @@ RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager "build-tools;${ANDROID_
 
 # Install common
 RUN apt-get update && \
-    apt-get install build-essential bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev
+    apt-get -y install build-essential bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev
 
 # Install xxd
 RUN apt-get update && \
-    apt-get install xxd
+    apt-get -y install xxd
 
 # Install gnupg2
 RUN apt-get update && \
-    apt-get install gnupg2
+    apt-get -y install gnupg2
