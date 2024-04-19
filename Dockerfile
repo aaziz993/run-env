@@ -6,7 +6,7 @@ USER root
 ENV TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" \
 ANDROID_SDK_ROOT="/usr/local/android-sdk" \
 ANDROID_SDK=33 \
-ANDROID_BUILD_TOOLS=33.0.3 \
+ANDROID_BUILD_TOOLS=33.0.1 \
 PATH="${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:${ANDROID_SDK_ROOT}/cmdline-tools/tools/bin:${PATH}"
 
 # Download Android SDK
@@ -24,6 +24,7 @@ RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager "build-tools;${ANDROID_
 "platforms;android-${ANDROID_SDK}" \
 "platform-tools"
 
-# Install xxd
+# Install xxd and gnupg
 RUN apt-get update && \
-    apt-get install xxd
+    apt-get install xxd && \
+    apt-get install gnupg
