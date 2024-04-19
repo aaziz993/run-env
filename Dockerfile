@@ -24,6 +24,14 @@ RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager "build-tools;${ANDROID_
 "platforms;android-${ANDROID_SDK}" \
 "platform-tools"
 
-# Install xxd and gnupg
+# Install common
 RUN apt-get update && \
-    apt-get install xxd gnupg
+    apt-get install build-essential bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev
+
+# Install xxd
+RUN apt-get update && \
+    apt-get install xxd
+
+# Install gnupg2
+RUN apt-get update && \
+    apt-get install gnupg2
