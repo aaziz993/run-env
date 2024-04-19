@@ -1,0 +1,43 @@
+schemaVersion: 2.2.0
+metadata:
+  name: 'Fleet dev env configuration'
+attributes:
+  space:
+    # regular, large, xlarge
+    instanceType: large
+    # a default IDE for the project
+    editor:
+      # (Required) IDE type: Idea, WebStorm, PyCharm,
+      # RubyMine, CLion, Fleet, GoLand, PhpStorm
+      type: Fleet
+      version: 1.33.90 Public Preview
+      # Space uses JetBrains Toolbox App to install IDEs to a dev environment.
+      # updateChannel defines IDE version release stage: Release, EAP
+      updateChannel: EAP
+      # JVM configuration (appends to the default .vmoptions file)
+      vmoptions:
+        - '-Xms2048m'
+        - '-Xmx4096m'
+    warmup:
+      startOn:
+        # The warm-up will run on schedule
+        - type: schedule
+          cron: '0 0 * * MON-FRI'
+        # The warm-up will run on git push to the main branch
+        - type: gitPush
+          branchFilter:
+            include:
+              - 'refs/heads/main'
+      script: |
+        ./dev-env-warmup.sh
+    # Parameters and secretes required by a dev environment
+    # e.g., credentials to an external service
+    requiredParameters:
+      # (Required) the name of the environment variable
+      # that will be available in the dev environment
+      - name: USERNAME
+        description: 'Space username'
+    requiredSecrets:
+      - name: PASSWORD
+        description: 'Space permanent token'
+    projectRoot: .

@@ -9,6 +9,8 @@ job("Code analysis, test, build and publish") {
         gitPush { enabled = true }
     }
 
+    val projectName = "env-os"
+
     parallel {
         host("Build and push a Docker image to Space Packages") {
             dockerBuildPush {
@@ -17,7 +19,7 @@ job("Code analysis, test, build and publish") {
                 // image labels
                 labels["vendor"] = "aaziz93"
 
-                val spaceRepository = "aaziz93.registry.jetbrains.space/p/aaziz-93/containers/cicd-os"
+                val spaceRepository = "aaziz93.registry.jetbrains.space/p/aaziz-93/containers/$projectName"
                 // image tags
                 tags {
                     // use current job run number as a tag - '0.0.run_number'
@@ -42,7 +44,7 @@ job("Code analysis, test, build and publish") {
                 file = "./Dockerfile"
                 labels["vendor"] = "aaziz93"
 
-                val dockerHubRepository = "aaziz93/cicd-os"
+                val dockerHubRepository = "aaziz93/$projectName"
                 tags {
                     +"$dockerHubRepository:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
                     +"$dockerHubRepository:latest"

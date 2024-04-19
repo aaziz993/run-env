@@ -5,8 +5,8 @@ MAINTAINER Aziz Atoev <a.atoev93@gmail.com>
 USER root
 ENV TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" \
 ANDROID_SDK_ROOT="/usr/local/android-sdk" \
-ANDROID_SDK=34 \
-ANDROID_BUILD_TOOLS=34.0.0 \
+ANDROID_SDK=33 \
+ANDROID_BUILD_TOOLS=33.0.3 \
 PATH="${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:${ANDROID_SDK_ROOT}/cmdline-tools/tools/bin:${PATH}"
 
 # Download Android SDK
