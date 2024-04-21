@@ -34,4 +34,4 @@ RUN apt-get update && \
 
 # Install gnupg2
 RUN apt-get update && \
-    apt-get -y install gnupg2
+    apt-get -y install gnupg
