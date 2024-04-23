@@ -25,17 +25,17 @@ RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager "build-tools;${ANDROID_
 "platform-tools"
 
 # Install common
-RUN apt update && \
-    apt -y install build-essential bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev
+RUN apt-get update && \
+    apt-get -y install build-essential bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev
 
 # Install xxd
-RUN apt update && \
-    apt -y install xxd
+RUN apt-get update && \
+    apt-get -y install xxd
 
 # Install gnupg2
-RUN apt update && \
-    apt -y install gnupg \
+RUN apt-get update && \
+    apt-get -y install gnupg \
 
 # Install make
-RUN apt update && \
-    apt install make
+RUN apt-get update && \
+    apt-get install make
