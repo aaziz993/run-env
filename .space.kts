@@ -24,6 +24,7 @@ job("Code format check, analysis and Publish") {
 //    container("Spotless code format check", "gradle") {
 //        kotlinScript { api ->
 //            api.gradlew("spotlessCheck", "--no-configuration-cache")
+//            api.parameters["image.name"] = api.gitRepositoryName()
 //        }
 //    }
 //
@@ -36,21 +37,14 @@ job("Code format check, analysis and Publish") {
 
     parallel {
         host("Publish to Space Packages") {
-            kotlinScript { api ->
-                api.parameters["name"] = api.projectId()
-                println("PROJECT ID=" + api.projectId())
-                println("PROJECT KEY=" + api.projectKey())
-                println("PROJECT IDENT=" + api.projectIdentifier())
-                println("REPOSITORY=" + api.gitRepositoryName())
-                println("FILE EXISTS=" + api.fileShare().locate("gradle.properties")?.exists())
-            }
+            println(env)
 //            dockerBuildPush {
 //                context = "."
 //                file = "./Dockerfile"
 //                // image labels
 //                labels["vendor"] = "aaziz93"
 //
-//                val spaceRepository = "aaziz93.registry.jetbrains.space/p/aaziz-93/containers/$projectName"
+//                val spaceRepository = "aaziz93.registry.jetbrains.space/p/aaziz-93/containers/{{ image.name }}"
 //                // image tags
 //                tags {
 //                    // use current job run number as a tag - '0.0.run_number'
@@ -75,7 +69,7 @@ job("Code format check, analysis and Publish") {
 //                file = "./Dockerfile"
 //                labels["vendor"] = "aaziz93"
 //
-//                val dockerHubRepository = "aaziz93/$projectName"
+//                val dockerHubRepository = "aaziz93/{{ image.name }}"
 //                tags {
 //                    +"$dockerHubRepository:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
 //                    +"$dockerHubRepository:latest"
