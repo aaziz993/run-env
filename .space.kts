@@ -21,17 +21,6 @@ job("Code format check, analysis and Publish") {
         gitPush { enabled = true }
     }
 
-    println("File exists gradle.properties" + File("./gradle.properties").exists())
-    println("File exists gradle.properties" + File("gradle.properties").exists())
-
-    container("Test","gradle"){
-        shellScript {
-            interpreter = "/bin/bash"
-            content = """
-                    ls
-                """
-        }
-    }
 //    container("Spotless code format check", "gradle") {
 //        kotlinScript { api ->
 //            api.gradlew("spotlessCheck", "--no-configuration-cache")
@@ -44,22 +33,16 @@ job("Code format check, analysis and Publish") {
 //            api.gradlew("sonar", "--no-configuration-cache")
 //        }
 //    }
-//
-//    // Get project name from gradle.properties
-//    val projectName = "env-os"
-//
-//    println(
-//        File("gradle.properties").let { file ->
-//            Properties().apply {
-//                if (file.exists()) {
-//                    load(file.reader())
-//                }
-//            }
-//        }.toMap(),
-//    )
-//
-//    parallel {
-//        host("Publish to Space Packages") {
+
+    parallel {
+        host("Publish to Space Packages") {
+            kotlinScript { api ->
+                api.parameters["name"] = api.projectId()
+                println("PROJECT ID=" + api.projectId())
+                println("PROJECT KEY=" + api.projectKey())
+                println("PROJECT IDENT=" + api.projectIdentifier())
+                println("FILE EXISTS=" + api.fileShare().locate("gradle.properties")?.exists())
+            }
 //            dockerBuildPush {
 //                context = "."
 //                file = "./Dockerfile"
@@ -74,8 +57,8 @@ job("Code format check, analysis and Publish") {
 //                    +"$spaceRepository:latest"
 //                }
 //            }
-//        }
-//
+        }
+
 //        host("Publish to DockerHub") {
 //            // Before running the scripts, the host machine will log in to
 //            // the registries specified in connections.
@@ -98,5 +81,5 @@ job("Code format check, analysis and Publish") {
 //                }
 //            }
 //        }
-//    }
+    }
 }
