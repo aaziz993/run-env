@@ -17,19 +17,19 @@ import java.util.*
  * limitations under the License.
  */
 
-job("Publish") {
+job("Code format check, analysis and Publish") {
     startOn {
         gitPush { enabled = true }
     }
 
-    container("Spotless code format", "gradle") {
+    container("Spotless code format check", "gradle") {
         kotlinScript { api ->
-            api.gradlew("spotlessApply")
+            api.gradlew("spotlessCheck")
         }
     }
 
     container("Sonar continuous inspection of code quality and security", "gradle") {
-        env["SONAR_TOKEN"] = "{{ project:sonar_token }}"
+        env["SONAR_TOKEN"] = "{{ project:sonar.token }}"
         kotlinScript { api ->
             api.gradlew("sonar")
         }
@@ -45,7 +45,7 @@ job("Publish") {
                     load(file.reader())
                 }
             }
-        },
+        }.toMap(),
     )
 
     parallel {
