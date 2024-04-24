@@ -37,6 +37,7 @@ job("Code format check, analysis and Publish") {
 
     parallel {
         host("Publish to Space Packages") {
+            println("ENVIRONMENT")
             println(env)
 //            dockerBuildPush {
 //                context = "."
