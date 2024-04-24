@@ -22,13 +22,10 @@ job("Code format check, analysis and publish") {
     parameters {
         text("image.version", "1.0.0")
         text("space.repository", "aaziz93.registry.jetbrains.space/p/aaziz-93/containers")
-        text("dockerhub.username", "aaziz93")
     }
 
     container("Spotless code format check", "gradle") {
         kotlinScript { api ->
-            api.parameters["git.repository.name"] = api.gitRepositoryName()
-            api.parameters["vendor"] = api.projectId()
             api.gradlew("spotlessCheck", "--no-configuration-cache")
         }
     }
@@ -47,9 +44,9 @@ job("Code format check, analysis and publish") {
                 context = "."
                 file = "./Dockerfile"
                 // image labels
-                labels["vendor"] = "{{ vendor }}"
+                labels["vendor"] = "{{ run:project.key }}"
 
-                val spaceRepository = "{{ space.repository }}/{{ git.repository.name }}"
+                val spaceRepository = "{{ space.repository }}/{{ run:trigger.git-push.repository }}"
                 // image tags
                 tags {
                     // use current job run number as a tag - '0.0.run_number'
@@ -72,9 +69,9 @@ job("Code format check, analysis and publish") {
             dockerBuildPush {
                 context = "."
                 file = "./Dockerfile"
-                labels["vendor"] = "{{ vendor }}"
+                labels["vendor"] = "{{ run:project.key }}"
 
-                val dockerHubRepository = "{{ dockerhub.username }}/{{ git.repository.name }}"
+                val dockerHubRepository = "{{ project:dockerhub.username }}/{{ run:trigger.git-push.repository }}"
                 tags {
                     +"$dockerHubRepository:{{ image.version }}.${"$"}JB_SPACE_EXECUTION_NUMBER"
                     +"$dockerHubRepository:latest"
