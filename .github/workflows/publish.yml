@@ -28,7 +28,7 @@ jobs:
           distribution: 'temurin'
           java-version: 17
 
-      - name: Spotless code format
+      - name: Spotless code format check
         run: ./gradlew spotlessCheck --no-configuration-cache
 
       - name: Sonar continuous inspection of code quality and security
