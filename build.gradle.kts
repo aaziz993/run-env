@@ -27,7 +27,7 @@ spotless {
         "/idea/**/*",
         "/fleet/**/*",
         "spotless/copyright",
-        ".gradle/**/*",
+        ".gradle/*",
     )
 
     format("kts") {

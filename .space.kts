@@ -21,61 +21,67 @@ job("Code format check, analysis and Publish") {
         gitPush { enabled = true }
     }
 
-//    container("Spotless code format check", "gradle") {
-//        kotlinScript { api ->
-//            api.gradlew("spotlessCheck", "--no-configuration-cache")
-//            api.parameters["image.name"] = api.gitRepositoryName()
-//        }
-//    }
-//
-//    container("Sonar continuous inspection of code quality and security", "gradle") {
-//        env["SONAR_TOKEN"] = "{{ project:sonar.token }}"
-//        kotlinScript { api ->
-//            api.gradlew("sonar", "--no-configuration-cache")
-//        }
-//    }
+    parameters {
+        text("image.version", "1.0.0")
+        text("space.repository", "aaziz93.registry.jetbrains.space/p/aaziz-93/containers")
+        text("dockerhub.username", "aaziz93")
+    }
+
+    container("Spotless code format check", "gradle") {
+        kotlinScript { api ->
+            api.parameters["git.repository.name"] = api.gitRepositoryName()
+            api.parameters["vendor"] = api.projectId()
+            api.gradlew("spotlessCheck", "--no-configuration-cache")
+        }
+    }
+
+    container("Sonar continuous inspection of code quality and security", "gradle") {
+        env["SONAR_TOKEN"] = "{{ project:sonar.token }}"
+        kotlinScript { api ->
+            api.gradlew("sonar", "--no-configuration-cache")
+        }
+    }
 
     parallel {
         host("Publish to Space Packages") {
-            println("ENVIRONMENT")
-            println(env)
-//            dockerBuildPush {
-//                context = "."
-//                file = "./Dockerfile"
-//                // image labels
-//                labels["vendor"] = "aaziz93"
-//
-//                val spaceRepository = "aaziz93.registry.jetbrains.space/p/aaziz-93/containers/{{ image.name }}"
-//                // image tags
-//                tags {
-//                    // use current job run number as a tag - '0.0.run_number'
-//                    +"$spaceRepository:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
-//                    +"$spaceRepository:latest"
-//                }
-//            }
+
+            dockerBuildPush {
+                context = "."
+                file = "./Dockerfile"
+                // image labels
+                labels["vendor"] = "{{ vendor }}"
+
+                val spaceRepository = "{{ space.repository }}/{{ git.repository.name }}"
+                // image tags
+                tags {
+                    // use current job run number as a tag - '0.0.run_number'
+                    +"$spaceRepository:{{ image.version }}.${"$"}JB_SPACE_EXECUTION_NUMBER"
+                    +"$spaceRepository:latest"
+                }
+            }
         }
 
-//        host("Publish to DockerHub") {
-//            // Before running the scripts, the host machine will log in to
-//            // the registries specified in connections.
-//            dockerRegistryConnections {
-//                // specify connection key
-//                +"docker_hub"
-//                // multiple connections are supported
-//                // +"one_more_connection"
-//            }
-//
-//            dockerBuildPush {
-//                context = "."
-//                file = "./Dockerfile"
-//                labels["vendor"] = "aaziz93"
-//
-//                val dockerHubRepository = "aaziz93/{{ image.name }}"
-//                tags {
-//                    +"$dockerHubRepository:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
-//                    +"$dockerHubRepository:latest"
-//                }
-//            }
-//        }
+        host("Publish to DockerHub") {
+            // Before running the scripts, the host machine will log in to
+            // the registries specified in connections.
+            dockerRegistryConnections {
+                // specify connection key
+                +"docker_hub"
+                // multiple connections are supported
+                // +"one_more_connection"
+            }
+
+            dockerBuildPush {
+                context = "."
+                file = "./Dockerfile"
+                labels["vendor"] = "{{ vendor }}"
+
+                val dockerHubRepository = "{{ dockerhub.username }}/{{ git.repository.name }}"
+                tags {
+                    +"$dockerHubRepository:{{ image.version }}.${"$"}JB_SPACE_EXECUTION_NUMBER"
+                    +"$dockerHubRepository:latest"
+                }
+            }
+        }
     }
 }
