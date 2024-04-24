@@ -36,13 +36,17 @@ job("Publish") {
     }
 
     // Get project name from gradle.properties
-    val projectName = File("gradle.properties").let { file ->
-        Properties().apply {
-            if (file.exists()) {
-                load(file.reader())
+    val projectName = "env-os"
+
+    println(
+        File("gradle.properties").let { file ->
+            Properties().apply {
+                if (file.exists()) {
+                    load(file.reader())
+                }
             }
-        }.getProperty("project.name").get()
-    }
+        },
+    )
 
     parallel {
         host("Publish to Space Packages") {
