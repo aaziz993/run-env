@@ -29,15 +29,15 @@ attributes:
             include:
               - 'refs/heads/main'
       script: |
-        ./dev-env-warmup.sh
+        ./../scripts/dev-env-warmup.sh
     # Parameters and secretes required by a dev environment
     # e.g., credentials to an external service
     requiredParameters:
       # (Required) the name of the environment variable
       # that will be available in the dev environment
-      - name: USERNAME
-        description: 'Space username'
+      - name: JB_SPACE_CLIENT_ID
+        description: 'Jetbrains Space username'
     requiredSecrets:
-      - name: PASSWORD
-        description: 'Space permanent token'
+      - name: JB_SPACE_CLIENT_SECRET
+        description: 'Jetbrains Space permanent token'
     projectRoot: .

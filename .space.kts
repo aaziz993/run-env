@@ -1,18 +1,51 @@
-/**
- * JetBrains Space Automation
- * This Kotlin-script file lets you automate build activities
- * For more info, see https://www.jetbrains.com/help/space/automation.html
+import java.io.File
+import java.util.*
+
+/*
+ * Copyright 2024 Aziz Atoev
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-job("Code analysis, test, build and publish") {
+job("Publish") {
     startOn {
         gitPush { enabled = true }
     }
 
-    val projectName = "env-os"
+    container("Spotless code format", "gradle") {
+        kotlinScript { api ->
+            api.gradlew("spotlessApply")
+        }
+    }
+
+    container("Sonar continuous inspection of code quality and security", "gradle") {
+        env["SONAR_TOKEN"] = "{{ project:sonar_token }}"
+        kotlinScript { api ->
+            api.gradlew("sonar")
+        }
+    }
+
+    // Get project name from gradle.properties
+    val projectName = File("gradle.properties").let { file ->
+        Properties().apply {
+            if (file.exists()) {
+                load(file.reader())
+            }
+        }.getProperty("project.name").get()
+    }
 
     parallel {
-        host("Build and push a Docker image to Space Packages") {
+        host("Publish to Space Packages") {
             dockerBuildPush {
                 context = "."
                 file = "./Dockerfile"
@@ -29,7 +62,7 @@ job("Code analysis, test, build and publish") {
             }
         }
 
-        host("Build and push a Docker image to DockerHub") {
+        host("Publish to DockerHub") {
             // Before running the scripts, the host machine will log in to
             // the registries specified in connections.
             dockerRegistryConnections {
