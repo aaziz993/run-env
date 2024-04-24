@@ -41,6 +41,7 @@ job("Code format check, analysis and Publish") {
                 println("PROJECT ID=" + api.projectId())
                 println("PROJECT KEY=" + api.projectKey())
                 println("PROJECT IDENT=" + api.projectIdentifier())
+                println("REPOSITORY=" + api.gitRepositoryName())
                 println("FILE EXISTS=" + api.fileShare().locate("gradle.properties")?.exists())
             }
 //            dockerBuildPush {
