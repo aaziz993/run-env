@@ -1,6 +1,3 @@
-import java.io.File
-import java.util.*
-
 /*
  * Copyright 2024 Aziz Atoev
  *
@@ -16,77 +13,81 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import java.io.File
+import java.util.*
 
 job("Code format check, analysis and Publish") {
     startOn {
         gitPush { enabled = true }
     }
 
-    container("Spotless code format check", "gradle") {
-        kotlinScript { api ->
-            api.gradlew("spotlessCheck")
-        }
-    }
+    println(Paths.get("").toAbsolutePath().toString())
 
-    container("Sonar continuous inspection of code quality and security", "gradle") {
-        env["SONAR_TOKEN"] = "{{ project:sonar.token }}"
-        kotlinScript { api ->
-            api.gradlew("sonar")
-        }
-    }
-
-    // Get project name from gradle.properties
-    val projectName = "env-os"
-
-    println(
-        File("gradle.properties").let { file ->
-            Properties().apply {
-                if (file.exists()) {
-                    load(file.reader())
-                }
-            }
-        }.toMap(),
-    )
-
-    parallel {
-        host("Publish to Space Packages") {
-            dockerBuildPush {
-                context = "."
-                file = "./Dockerfile"
-                // image labels
-                labels["vendor"] = "aaziz93"
-
-                val spaceRepository = "aaziz93.registry.jetbrains.space/p/aaziz-93/containers/$projectName"
-                // image tags
-                tags {
-                    // use current job run number as a tag - '0.0.run_number'
-                    +"$spaceRepository:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
-                    +"$spaceRepository:latest"
-                }
-            }
-        }
-
-        host("Publish to DockerHub") {
-            // Before running the scripts, the host machine will log in to
-            // the registries specified in connections.
-            dockerRegistryConnections {
-                // specify connection key
-                +"docker_hub"
-                // multiple connections are supported
-                // +"one_more_connection"
-            }
-
-            dockerBuildPush {
-                context = "."
-                file = "./Dockerfile"
-                labels["vendor"] = "aaziz93"
-
-                val dockerHubRepository = "aaziz93/$projectName"
-                tags {
-                    +"$dockerHubRepository:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
-                    +"$dockerHubRepository:latest"
-                }
-            }
-        }
-    }
+//    container("Spotless code format check", "gradle") {
+//        kotlinScript { api ->
+//            api.gradlew("spotlessCheck")
+//        }
+//    }
+//
+//    container("Sonar continuous inspection of code quality and security", "gradle") {
+//        env["SONAR_TOKEN"] = "{{ project:sonar.token }}"
+//        kotlinScript { api ->
+//            api.gradlew("sonar")
+//        }
+//    }
+//
+//    // Get project name from gradle.properties
+//    val projectName = "env-os"
+//
+//    println(
+//        File("gradle.properties").let { file ->
+//            Properties().apply {
+//                if (file.exists()) {
+//                    load(file.reader())
+//                }
+//            }
+//        }.toMap(),
+//    )
+//
+//    parallel {
+//        host("Publish to Space Packages") {
+//            dockerBuildPush {
+//                context = "."
+//                file = "./Dockerfile"
+//                // image labels
+//                labels["vendor"] = "aaziz93"
+//
+//                val spaceRepository = "aaziz93.registry.jetbrains.space/p/aaziz-93/containers/$projectName"
+//                // image tags
+//                tags {
+//                    // use current job run number as a tag - '0.0.run_number'
+//                    +"$spaceRepository:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
+//                    +"$spaceRepository:latest"
+//                }
+//            }
+//        }
+//
+//        host("Publish to DockerHub") {
+//            // Before running the scripts, the host machine will log in to
+//            // the registries specified in connections.
+//            dockerRegistryConnections {
+//                // specify connection key
+//                +"docker_hub"
+//                // multiple connections are supported
+//                // +"one_more_connection"
+//            }
+//
+//            dockerBuildPush {
+//                context = "."
+//                file = "./Dockerfile"
+//                labels["vendor"] = "aaziz93"
+//
+//                val dockerHubRepository = "aaziz93/$projectName"
+//                tags {
+//                    +"$dockerHubRepository:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
+//                    +"$dockerHubRepository:latest"
+//                }
+//            }
+//        }
+//    }
 }

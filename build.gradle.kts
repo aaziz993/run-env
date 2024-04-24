@@ -31,6 +31,13 @@ spotless {
         licenseHeaderFile(rootProject.file("spotless/copyright.kts"), "(^(?![\\/ ]\\*).*$)")
     }
 
+    format("misc") {
+        target("**/*.gradle", "**/*.md", "**/.gitignore")
+        indentWithSpaces()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+
     // Additional configuration for Kotlin Gradle scripts
     kotlinGradle {
         target("*.gradle.kts")
@@ -50,7 +57,7 @@ sonarqube {
         property("sonar.organization", providers.gradleProperty("sonar.organization").get())
         property(
             "sonar.projectKey",
-            "${providers.gradleProperty("sonar.organization").get()}_${name}",
+            "${providers.gradleProperty("sonar.organization").get()}_$name",
         )
     }
 }
