@@ -26,23 +26,15 @@ spotless {
         "${layout.buildDirectory}/**/*",
         "/idea/**/*",
         "/fleet/**/*",
-        "spotless/copyright",
-        ".gradle/*",
+        ".gradle/**/*",
     )
 
     format("kts") {
         target("**/*.kts")
-        // Exclude files in the build directory
-        targetExclude(*excludeSourceFileTargets.map { "$it.kts" }.toTypedArray())
+        // Exclude files in the gitignore directories
+        targetExclude(*(excludeSourceFileTargets.map { "$it.kts" } + "spotless/copyright.kts").toTypedArray())
         // Look for the first line that doesn't have a block comment (assumed to be the license)
         licenseHeaderFile(providers.gradleProperty("spotless.kts.license.header.file"), "(^(?![\\/ ]\\*).*$)")
-    }
-
-    format("misc") {
-        target("**/*.md", "**/.gitignore")
-        indentWithSpaces()
-        trimTrailingWhitespace()
-        endWithNewline()
     }
 
     // Additional configuration for Kotlin Gradle scripts
@@ -50,6 +42,21 @@ spotless {
         target("*.gradle.kts")
         // Apply ktlint to Gradle Kotlin scripts
         ktlint("1.2.1")
+    }
+
+    format("misc") {
+        target("**/*.md", "**/.gitignore")
+        // Exclude files in the gitignore directories
+        targetExclude(
+            *(
+                excludeSourceFileTargets.map {
+                    "$it.md"
+                } + excludeSourceFileTargets.map { "$it.gitignore" }
+                ).toTypedArray(),
+        )
+        indentWithSpaces()
+        trimTrailingWhitespace()
+        endWithNewline()
     }
 }
 

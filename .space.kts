@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import java.io.File
-import java.util.*
 
-job("Code format check, analysis and Publish") {
+job("Code format check, analysis and publish") {
     startOn {
         gitPush { enabled = true }
     }
