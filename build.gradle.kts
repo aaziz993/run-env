@@ -22,17 +22,24 @@ plugins {
 }
 
 spotless {
+    val excludeSourceFileTargets = listOf(
+        "${layout.buildDirectory}/**/*",
+        "/idea/**/*",
+        "/fleet/**/*",
+        "spotless/copyright",
+        ".gradle/**/*",
+    )
 
     format("kts") {
         target("**/*.kts")
         // Exclude files in the build directory
-        targetExclude("${layout.buildDirectory}/**/*.kts", "spotless/copyright.kts")
+        targetExclude(*excludeSourceFileTargets.map { "$it.kts" }.toTypedArray())
         // Look for the first line that doesn't have a block comment (assumed to be the license)
-        licenseHeaderFile(rootProject.file("spotless/copyright.kts"), "(^(?![\\/ ]\\*).*$)")
+        licenseHeaderFile(providers.gradleProperty("spotless.kts.license.header.file"), "(^(?![\\/ ]\\*).*$)")
     }
 
     format("misc") {
-        target("**/*.gradle", "**/*.md", "**/.gitignore")
+        target("**/*.md", "**/.gitignore")
         indentWithSpaces()
         trimTrailingWhitespace()
         endWithNewline()

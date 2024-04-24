@@ -21,18 +21,27 @@ job("Code format check, analysis and Publish") {
         gitPush { enabled = true }
     }
 
-    println(Paths.get("").toAbsolutePath().toString())
+    println("File exists gradle.properties" + File("./gradle.properties").exists())
+    println("File exists gradle.properties" + File("gradle.properties").exists())
 
+    container("Test","gradle"){
+        shellScript {
+            interpreter = "/bin/bash"
+            content = """
+                    ls
+                """
+        }
+    }
 //    container("Spotless code format check", "gradle") {
 //        kotlinScript { api ->
-//            api.gradlew("spotlessCheck")
+//            api.gradlew("spotlessCheck", "--no-configuration-cache")
 //        }
 //    }
 //
 //    container("Sonar continuous inspection of code quality and security", "gradle") {
 //        env["SONAR_TOKEN"] = "{{ project:sonar.token }}"
 //        kotlinScript { api ->
-//            api.gradlew("sonar")
+//            api.gradlew("sonar", "--no-configuration-cache")
 //        }
 //    }
 //
