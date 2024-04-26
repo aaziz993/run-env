@@ -1,3 +1,5 @@
+.PHONY: chmod-gradlew format format-check cl
+
 chmod-gradlew:
 	git update-index --chmod=+x gradlew
 
@@ -6,3 +8,6 @@ format:
 
 format-check:
 	gradlew spotlessCheck --no-configuration-cache
+
+clean:
+	gradlew clean
