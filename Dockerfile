@@ -53,7 +53,7 @@ ENV DOCKER_URL="https://download.docker.com/linux/ubuntu"
 ENV DOCKER_GPG_KEY_URL="$DOCKER_URL/gpg"
 
 ## Kubernetes
-ENV KUBERNETES_VERSION="v1.30.7"
+ENV KUBERNETES_VERSION="v1.30"
 ENV KUBERNETES_URL="https://pkgs.k8s.io/core:/stable:/$KUBERNETES_VERSION/deb/ /" \
     KUBERNETES_GPG_KEY_URL="https://pkgs.k8s.io/core:/stable:/$KUBERNETES_VERSION/deb/Release.key"
 
