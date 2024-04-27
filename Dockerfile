@@ -127,6 +127,10 @@ RUN set -ex -o pipefail && \
     chown root:root /usr/bin/rclone && \
     chmod 755 /usr/bin/rclone && \
     rm -rf "$RCLONE_FILE" "$RCLONE_FILE.zip" && \
+    mkdir -p /usr/local/share/man/man1 && \
+    cp rclone.1 /usr/local/share/man/man1/ && \
+    mandb && \
+    rclone config && \
     rclone --version
 
 # -------------------------------------------------------SUMMARY--------------------------------------------------------
@@ -139,7 +143,6 @@ RUN echo "############################### Versions #############################
     echo "" && \
     ruby --version && \
     python3 --version &&  \
-    python2 --version &&  \
     pip3 --version && \
     echo "" && \
     echo "Nodejs: $(node --version)" &&  \
