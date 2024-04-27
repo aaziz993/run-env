@@ -126,7 +126,6 @@ RUN set -ex -o pipefail && \
     unzip "$RCLONE_FILE.zip" && \
     rm "$RCLONE_FILE.zip" && \
     cp "$RCLONE_FILE/rclone" /usr/bin/ && \
-    rm "$RCLONE_FILE" && \
     chown root:root /usr/bin/rclone && \
     chmod 755 /usr/bin/rclone && \
     rclone --version
