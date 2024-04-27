@@ -4,11 +4,9 @@ MAINTAINER Aziz Atoev <a.atoev93@gmail.com>
 
 USER root
 
-RUN echo TEST BEGIN && \
-    java --version && \
-    make --version && \
-    gradle --version && \
-    echo TEST END
+RUN bash -c 'java --version'
+RUN bash -c 'make --version'
+RUN bash -c 'gradle --version'
 
 # --------------------------------------------ENVIRONMENT VARIABLES-----------------------------------------------------
 # GRADLE
