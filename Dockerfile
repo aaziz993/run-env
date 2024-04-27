@@ -24,10 +24,7 @@ PATH="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/cmdline-tools
 
 # --------------------------------------------INSTALL BASE PACKAGES-----------------------------------------------------
 RUN apt update && \
-    apt -y openjdk-17-jdk  \
-    install build-essential bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev \
-    xxd \
-    gnupg
+    apt -y install build-essential bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev openjdk-17-jdk openjdk-17-jdk xxd gnupg
 RUN echo "BASE PACKAGES INSTALLED"
 
 # ------------------------------------------DOWNLOAD AND INSTALL GRADLE-------------------------------------------------
