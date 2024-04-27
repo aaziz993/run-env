@@ -129,7 +129,6 @@ RUN set -ex -o pipefail && \
     mkdir -p /usr/local/share/man/man1 && \
     cp "$RCLONE_FILE/rclone.1" /usr/local/share/man/man1/ && \
     mandb && \
-    rclone config && \
     rm -rf "$RCLONE_FILE" "$RCLONE_FILE.zip" && \
     rclone --version
 
