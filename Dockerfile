@@ -61,7 +61,7 @@ ENV RCLONE_URL="https://downloads.rclone.org/v1.56.2/rclone-v1.56.2-linux-$TARGE
 # --------------------------------------------INSTALL BASE PACKAGES-----------------------------------------------------
 RUN apt update &&  apt install -y \
     # Useful utilities \
-    curl unzip  \
+    curl unzip
 #    wget socat man-db rsync moreutils vim lsof xxd gnupg make \
 #    bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev \
 #    # Setup Java \
