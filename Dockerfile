@@ -59,7 +59,7 @@ RUN apt update &&  apt install -y \
 
 # ------------------------------------------DOWNLOAD AND INSTALL GRADLE-------------------------------------------------
 RUN cd "$GRADLE_ROOT" && \
-    curl -L -o "$GRADLE_FILE.zip" "$GRADLE_URL" && \
+    curl -o "$GRADLE_FILE.zip" "$GRADLE_URL" && \
     unzip "$GRADLE_FILE.zip" && \
     rm "$GRADLE_FILE.zip"
 
