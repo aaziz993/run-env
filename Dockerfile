@@ -28,7 +28,7 @@ PATH="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/cmdline-tools
 RUN apt update && \
     apt -y install curl &&  \
     apt -y install build-essential bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev && \
-    apt -y install openjdk-17-jdk && \
+    apt -y install openjdk-17-jdk-headless && \
     apt -y install xxd && \
     apt -y install gnupg && \
     echo "BASE PACKAGES INSTALLED"
@@ -36,7 +36,8 @@ RUN apt update && \
 # ------------------------------------------DOWNLOAD AND INSTALL GRADLE-------------------------------------------------
 RUN mkdir "$GRADLE_ROOT" &&  \
     cd "$GRADLE_ROOT" && \
-#    curl -o "$GRADLE_FILE.zip" "$GRADLE_URL" && \
+    curl -o "$GRADLE_FILE.zip" "$GRADLE_URL" && \
+    ls && \
 #    unzip "$GRADLE_FILE.zip" && \
 #    rm "$GRADLE_FILE.zip" && \
     echo "GRADLE $GRADLE_VERSION INSTALLED"
