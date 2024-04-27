@@ -13,7 +13,6 @@ CMD ["/bin/bash", "-l"]
 ENV GRADLE_VERSION=8.7 \
     GRADLE_ROOT="/usr/local/gradle" \
     PATH="$GRADLE_ROOT/$GRADLE_FILE/bin:$PATH"
-
 ENV GRADLE_URL="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
     GRADLE_FILE="gradle-$GRADLE_VERSION"
 
@@ -23,9 +22,12 @@ ENV TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-1
     ANDROID_SDK_VERSION=33 \
     ANDROID_BUILD_TOOLS_VERSION=33.0.1 \
     PATH="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/cmdline-tools/tools/bin:$PATH"
-ENV ANDROID_SDK_FILE="android-sdk-$ANDROID_SDK_VERSION.zip" \
+ENV ANDROID_SDK_FILE="android-sdk-$ANDROID_SDK_VERSION.zip"
 
-
+# NODEJS
+ENV NODEJS_VERSION="20.x" \
+    YARN_URL="https://dl.yarnpkg.com/debian"
+ENV NODEJS_URL="https://deb.nodesource.com/setup_$NODEJS_VERSION"
 
 # --------------------------------------------INSTALL BASE PACKAGES-----------------------------------------------------
 # Set debconf to run non-interactively
@@ -36,12 +38,15 @@ RUN apt-get update && apt-get install -y apt-utils apt-transport-https software-
 # Newest git
 RUN apt-add-repository ppa:git-core/ppa -y && apt-get update
 
-RUN apt -y install curl build-essential bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev \
+RUN apt -y install \
+    # Useful utilities \
+    curl unzip wget socat man-db rsync moreutils vim lsof xxd gnupg \
+    bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev \
     # Setup Java \
     openjdk-17-jdk-headless \
     # Setup Ruby \
-    xxd \
-    gnupg && \
+    # Python 3 \
+    python3-matplotlib python3-numpy python3-pip python3-scipy python3-pandas python3-dev pipenv && \
     echo "BASE PACKAGES INSTALLED"
 
 # ------------------------------------------DOWNLOAD AND INSTALL GRADLE-------------------------------------------------
@@ -69,7 +74,14 @@ RUN mkdir "$GRADLE_ROOT" &&  \
 #"platforms;android-$ANDROID_SDK_VERSION" \
 #"platform-tools"
 #RUN echo "ANDROID SDK $ANDROID_BUILD_TOOLS_VERSION INSTALLED"
-#
+
+# --------------------------------------------------NODEJS, NPM, YARN---------------------------------------------------
+#RUN set -ex -o pipefail &&  \
+#    curl -fsSL "$NODEJS_URL" | bash - && \
+#    curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarnkey.gpg >/dev/null && \
+#    echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] $YARN_URL stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+#    apt-get update && apt-get install -y nodejs yarn
+
 ## ------------------------------------------------------VERSIONS--------------------------------------------------------
 #RUN echo "############################### Versions #####################################" && \
 #    java -version &&  \
