@@ -149,7 +149,7 @@ RUN echo "############################### Versions #############################
     echo "Yarn: $(yarn --version)" && \
     echo "" && \
     docker --version &&  \
-    docker-compose --version && \
+    docker compose version && \
     echo "" && \
     echo "Kubectl: $(kubectl version --client)" && \
     echo "" && \
