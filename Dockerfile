@@ -16,8 +16,7 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 
 # -------------------------------------------REPOSITORIES---------------------------------------------------------------
 RUN apt-get update && apt-get install -y apt-utils apt-transport-https software-properties-common && \
-    apt-add-repository ppa:git-core/ppa -y && apt update
-
+    apt-add-repository ppa:git-core/ppa ppa:openjdk-r/ppa -y && apt update
 # ---------------------------------------------ARGUMANTS----------------------------------------------------------------
 ARG TARGETARCH
 
@@ -58,10 +57,10 @@ RUN apt update &&  apt install -y \
 # ------------------------------------------DOWNLOAD AND INSTALL GRADLE-------------------------------------------------
 RUN mkdir "$GRADLE_ROOT" &&  \
     cd "$GRADLE_ROOT" && \
-    curl -o "$GRADLE_FILE.zip" "$GRADLE_URL" && \
-    ls -l && \
-    unzip "$GRADLE_FILE.zip" && \
-    rm "$GRADLE_FILE.zip"
+    curl -o $GRADLE_FILE.zip "$GRADLE_URL" && \
+    ls -a && \
+    unzip $GRADLE_FILE.zip && \
+    rm $GRADLE_FILE.zip
 
 # ----------------------------------------------DOWNLOAD ANDROID SDK----------------------------------------------------
 RUN mkdir "$ANDROID_SDK_ROOT" .android "$ANDROID_SDK_ROOT/cmdline-tools" && \
