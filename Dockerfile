@@ -53,7 +53,7 @@ ENV DOCKER_URL="https://download.docker.com/linux/ubuntu"
 ENV DOCKER_GPG_KEY_URL="$DOCKER_URL/gpg"
 
 ## Kubernetes
-ENV KUBERNETES_URL="https://pkgs.k8s.io/core:/stable:/v1.30/deb/"
+ENV KUBERNETES_URL="https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /"
 
 ## RCLONE
 ENV RCLONE_URL="https://downloads.rclone.org/v1.56.2/rclone-v1.56.2-linux-$TARGETARCH.zip"
@@ -109,7 +109,7 @@ RUN set -ex -o pipefail && \
     docker --version && \
     # Kubernetes \
     curl -fsSL "$GOOGLE_GPG_KEY_URL" | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg && \
-    echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] $KUBERNETES_URL /" | tee /etc/apt/sources.list.d/kubernetes.list && \
+    echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] $KUBERNETES_URL" | tee /etc/apt/sources.list.d/kubernetes.list && \
     apt update && apt install -y kubectl && \
     kubectl version --client && \
     # RClone \
