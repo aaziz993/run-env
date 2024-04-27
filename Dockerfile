@@ -23,6 +23,9 @@ RUN apt-get update && apt-get install -y apt-utils apt-transport-https software-
 ARG TARGETARCH
 
 # --------------------------------------------ENVIRONMENT VARIABLES-----------------------------------------------------
+## GOOGLE
+ENV GOOGLE_GPG_KEY_URL="https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+
 ## GRADLE
 ENV GRADLE_VERSION=8.7 \
     GRADLE_ROOT="/usr/local/gradle"
@@ -44,6 +47,19 @@ ENV NODEJS_VERSION="20.x" \
     YARN_URL="https://dl.yarnpkg.com/debian"
 ENV NODEJS_URL="https://deb.nodesource.com/setup_$NODEJS_VERSION"
 
+## Docker
+ENV DOCKER_URL="https://download.docker.com/linux/ubuntu"
+ENV DOCKER_GPG_URL="$DOCKER_URL/gpg"
+
+### Docker compose
+ENV DOCKER_COMPOSE_URL="https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose"
+
+## Kubernetes
+ENV KUBERNETES_URL="https://pkgs.k8s.io/core:/stable:/v1.28/deb/"
+
+## RCLONE
+ENV RCLONE_URL="https://downloads.rclone.org/v1.56.2/rclone-v1.56.2-linux-$TARGETARCH.zip"
+
 # --------------------------------------------INSTALL BASE PACKAGES-----------------------------------------------------
 RUN apt update &&  apt install -y \
     # Useful utilities \
@@ -59,14 +75,14 @@ RUN apt update &&  apt install -y \
 # ------------------------------------------DOWNLOAD AND INSTALL GRADLE-------------------------------------------------
 RUN mkdir -p "$GRADLE_ROOT" &&  \
     cd "$GRADLE_ROOT" && \
-    curl -L "$GRADLE_URL" -o "$GRADLE_FILE.zip" && \
+    curl -fsSL "$GRADLE_URL" -o "$GRADLE_FILE.zip" && \
     unzip "$GRADLE_FILE.zip" && \
     rm "$GRADLE_FILE.zip"
 
 # ----------------------------------------------DOWNLOAD ANDROID SDK----------------------------------------------------
 RUN mkdir -p "$ANDROID_SDK_ROOT" .android "$ANDROID_SDK_ROOT/cmdline-tools" && \
     cd "$ANDROID_SDK_ROOT/cmdline-tools" && \
-    curl -L "$TOOLS_URL" -o "$ANDROID_SDK_FILE"  && \
+    curl -fsSL "$TOOLS_URL" -o "$ANDROID_SDK_FILE"  && \
     unzip "$ANDROID_SDK_FILE" && \
     rm "$ANDROID_SDK_FILE" && \
     mv cmdline-tools tools && \
@@ -88,18 +104,18 @@ RUN set -ex -o pipefail &&  \
 # -----------------------------------------------------CLOUD TOOLS------------------------------------------------------
 RUN set -ex -o pipefail && \
     # Docker \
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+    curl -fsSL "$DOCKER_GPG_URL" | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] $DOCKER_URL \
       $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list && \
     apt install -y docker.io && \
     docker --version && \
     # Kubernetes \
-    curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list && \
+    curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg "$GOOGLE_GPG_KEY_URL" && \
+    echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] $KUBERNETES_URL /" | tee /etc/apt/sources.list.d/kubernetes.list && \
     apt update && apt install -y kubectl && \
     kubectl version --client && \
     # rclone \
-    curl -fsSL https://downloads.rclone.org/v1.56.2/rclone-v1.56.2-linux-$TARGETARCH.zip -o /tmp/rclone.zip && \
+    curl -fsSL $RCLONE_URL -o /tmp/rclone.zip && \
     mkdir -p /tmp/rclone.extracted && unzip -q /tmp/rclone.zip -d /tmp/rclone.extraced && \
     install -g root -o root -m 0755 -v /tmp/rclone.extraced/*/rclone /usr/local/bin && \
     rm -rf /tmp/rclone.extraced /tmp/rclone.zip && \
@@ -112,7 +128,7 @@ RUN if [ "$TARGETARCH" == "arm64" ] ; \
       else DOCKER_COMPOSE_VERSION=1.29.2 ; \
     fi && \
     set -ex -o pipefail && \
-    curl -fsSL "https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
+    curl -fsSL "$DOCKER_COMPOSE_URL-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
     chmod +x /usr/local/bin/docker-compose && \
     rm -f /usr/bin/docker-compose && \
     ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
