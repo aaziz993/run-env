@@ -52,9 +52,6 @@ ENV NODEJS_URL="https://deb.nodesource.com/setup_$NODEJS_VERSION"
 ENV DOCKER_URL="https://download.docker.com/linux/ubuntu"
 ENV DOCKER_GPG_KEY_URL="$DOCKER_URL/gpg"
 
-### Docker compose
-ENV DOCKER_COMPOSE_URL="https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose"
-
 ## Kubernetes
 ENV KUBERNETES_URL="https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /"
 
@@ -129,7 +126,7 @@ RUN if [ "$TARGETARCH" == "arm64" ] ; \
       else DOCKER_COMPOSE_VERSION=1.29.2 ; \
     fi && \
     set -ex -o pipefail && \
-    curl -fsSL "$DOCKER_COMPOSE_URL-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
+    curl -fsSL "https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
     chmod +x /usr/local/bin/docker-compose && \
     rm -f /usr/bin/docker-compose && \
     ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
