@@ -4,9 +4,7 @@ MAINTAINER Aziz Atoev <a.atoev93@gmail.com>
 
 USER root
 
-RUN bash -c 'java --version'
-RUN bash -c 'make --version'
-RUN bash -c 'gradle --version'
+RUN java --version
 
 # --------------------------------------------ENVIRONMENT VARIABLES-----------------------------------------------------
 # GRADLE
