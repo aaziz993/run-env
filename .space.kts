@@ -34,14 +34,14 @@ job("Code format check, analysis and publish") {
 
     container("Spotless code format check", "{{ env_os }}") {
         kotlinScript { api ->
-            api.gradlew("spotlessCheck", "{{ gradlew_option }}")
+            api.gradlew("spotlessCheck {{ gradlew_option }}")
         }
     }
 
     container("Sonar continuous inspection of code quality and security", "{{ env_os }}") {
         env["SONAR_TOKEN"] = "{{ project:sonar.token }}"
         kotlinScript { api ->
-            api.gradlew("sonar", "{{ gradlew_option }}")
+            api.gradlew("sonar {{ gradlew_option }}")
         }
     }
 
