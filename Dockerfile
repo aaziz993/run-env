@@ -111,7 +111,7 @@ RUN set -ex -o pipefail && \
     apt install -y docker.io && \
     docker --version && \
     # Kubernetes \
-    curl -fsSLo "$GOOGLE_GPG_KEY_URL" | gpg --dearmor -o /usr/share/keyrings/kubernetes-archive-keyring.gpg && \
+    curl -fsSL "$GOOGLE_GPG_KEY_URL" | gpg --dearmor -o /usr/share/keyrings/kubernetes-archive-keyring.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] $KUBERNETES_URL /" | tee /etc/apt/sources.list.d/kubernetes.list && \
     apt update && apt install -y kubectl && \
     kubectl version --client && \
