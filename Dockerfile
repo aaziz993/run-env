@@ -4,10 +4,17 @@ MAINTAINER Aziz Atoev <a.atoev93@gmail.com>
 
 USER root
 
+# Install base packages
+RUN apt update && \
+    apt -y openjdk-17-jdk  \
+    install build-essential bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev \
+    xxd \
+    gnupg
+
 # Download and install Gradle
 ENV GRADLE_VERSION=8.7 \
-GRADLE_URL="https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip"
-GRADLE_ROOT="/usr/local"
+GRADLE_URL="https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip" \
+GRADLE_ROOT="/usr/local" \
 GRADLE_FILE="gradle-$GRADLE_VERSION" \
 RUN \
     cd "$GRADLE_ROOT" && \
@@ -37,10 +44,3 @@ RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager --update
 RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager "build-tools;$ANDROID_BUILD_TOOLS" \
 "platforms;android-$ANDROID_SDK" \
 "platform-tools"
-
-# Install other packages
-RUN apt update && \
-    apt -y openjdk-17-jdk  \
-    install build-essential bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev \
-    xxd \
-    gnupg
