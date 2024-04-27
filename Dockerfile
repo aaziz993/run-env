@@ -64,7 +64,7 @@ ENV RCLONE_URL="https://downloads.rclone.org/v1.56.2/rclone-v1.56.2-linux-$TARGE
 # --------------------------------------------INSTALL BASE PACKAGES-----------------------------------------------------
 RUN apt update &&  apt install -y \
     # Useful utilities \
-    curl unzip  gnupg
+    ca-certificates curl unzip gnupg
 #    xxd make wget socat man-db rsync moreutils vim lsof  \
 #    bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev \
 #    # Setup Java \
@@ -105,17 +105,21 @@ RUN apt update &&  apt install -y \
 
 # -----------------------------------------------------CLOUD TOOLS------------------------------------------------------
 RUN set -ex -o pipefail && \
-#    # Docker \
-#    curl -fsSL "$DOCKER_GPG_KEY_URL" | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
-#    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] $DOCKER_URL \
-#      $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list && \
-#    apt install -y docker.io && \
-#    docker --version && \
+    # Docker \
+    install -m 0755 -d /etc/apt/keyrings && \
+    curl -fsSL "$DOCKER_GPG_KEY_URL" -o /etc/apt/keyrings/docker.asc && \
+    chmod a+r /etc/apt/keyrings/docker.asc && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] $DOCKER_URL \
+    $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+    tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+    apt update && \
+    apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin && \
+    docker --version && \
     # Kubernetes \
     curl -fsSL "$KUBERNETES_GPG_KEY_URL" | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg && \
     echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] $KUBERNETES_URL" | tee /etc/apt/sources.list.d/kubernetes.list && \
     apt update && apt install -y kubectl && \
-    kubectl version --client && \
+    kubectl version --client
 #    # RClone \
 #    curl -fsSL $RCLONE_URL -o /tmp/rclone.zip && \
 #    mkdir -p /tmp/rclone.extracted && unzip -q /tmp/rclone.zip -d /tmp/rclone.extraced && \
