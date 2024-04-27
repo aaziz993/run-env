@@ -4,7 +4,7 @@ MAINTAINER Aziz Atoev <a.atoev93@gmail.com>
 
 USER root
 
-RUN java --version
+RUN echo "SOMETHING"
 
 # --------------------------------------------ENVIRONMENT VARIABLES-----------------------------------------------------
 # GRADLE
