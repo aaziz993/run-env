@@ -60,44 +60,43 @@ ENV RCLONE_URL="https://downloads.rclone.org/$RCLON_VERSION/rclone-$RCLON_VERSIO
 # --------------------------------------------INSTALL BASE PACKAGES-----------------------------------------------------
 RUN apt update &&  apt install -y \
     # Useful utilities \
-    ca-certificates curl unzip gnupg
-#    xxd make wget socat man-db rsync moreutils vim lsof  \
-#    bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev \
-#    # Setup Java \
-#    openjdk-17-jdk-headless \
-#    # Setup Ruby \
-#    ruby-full \
-#    # Python 3 \
-#    python3-matplotlib python3-numpy python3-pip python3-scipy python3-pandas python3-dev pipenv
-#
-## ------------------------------------------DOWNLOAD AND INSTALL GRADLE-------------------------------------------------
-#RUN mkdir -p "$GRADLE_ROOT" &&  \
-#    cd "$GRADLE_ROOT" && \
-#    curl -fsSL "$GRADLE_URL" -o "$GRADLE_FILE.zip" && \
-#    unzip "$GRADLE_FILE.zip" && \
-#    rm "$GRADLE_FILE.zip"
-#
-## ----------------------------------------------DOWNLOAD ANDROID SDK----------------------------------------------------
-#RUN mkdir -p "$ANDROID_SDK_ROOT" .android "$ANDROID_SDK_ROOT/cmdline-tools" && \
-#    cd "$ANDROID_SDK_ROOT/cmdline-tools" && \
-#    curl -fsSL "$TOOLS_URL" -o "$ANDROID_SDK_FILE"  && \
-#    unzip "$ANDROID_SDK_FILE" && \
-#    rm "$ANDROID_SDK_FILE" && \
-#    mv cmdline-tools tools && \
-#    yes | $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager --licenses
-#
-## -------------------------------------------INSTALL ANDROID BUILD TOOLS------------------------------------------------
-#RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager --update
-#RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager "build-tools;$ANDROID_BUILD_TOOLS_VERSION" \
-#"platforms;android-$ANDROID_SDK_VERSION" \
-#"platform-tools"
-#
-## --------------------------------------------------NODEJS, NPM, YARN---------------------------------------------------
-#RUN set -ex -o pipefail &&  \
-#    curl -fsSL "$NODEJS_URL" | bash - && \
-#    curl -fsSL "$YARN_GPG_KEY_URL" | gpg --dearmor | tee /usr/share/keyrings/yarnkey.gpg >/dev/null && \
-#    echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] $YARN_URL" | tee /etc/apt/sources.list.d/yarn.list && \
-#    apt update && apt install -y nodejs yarn
+    ca-certificates curl unzip gnupg xxd make wget socat man-db rsync moreutils vim lsof  \
+    bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev \
+    # Setup Java \
+    openjdk-17-jdk-headless \
+    # Setup Ruby \
+    ruby-full \
+    # Python 3 \
+    python3-matplotlib python3-numpy python3-pip python3-scipy python3-pandas python3-dev pipenv
+
+# ------------------------------------------DOWNLOAD AND INSTALL GRADLE-------------------------------------------------
+RUN mkdir -p "$GRADLE_ROOT" &&  \
+    cd "$GRADLE_ROOT" && \
+    curl -fsSL "$GRADLE_URL" -o "$GRADLE_FILE.zip" && \
+    unzip "$GRADLE_FILE.zip" && \
+    rm "$GRADLE_FILE.zip"
+
+# ----------------------------------------------DOWNLOAD ANDROID SDK----------------------------------------------------
+RUN mkdir -p "$ANDROID_SDK_ROOT" .android "$ANDROID_SDK_ROOT/cmdline-tools" && \
+    cd "$ANDROID_SDK_ROOT/cmdline-tools" && \
+    curl -fsSL "$TOOLS_URL" -o "$ANDROID_SDK_FILE"  && \
+    unzip "$ANDROID_SDK_FILE" && \
+    rm "$ANDROID_SDK_FILE" && \
+    mv cmdline-tools tools && \
+    yes | $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager --licenses
+
+# -------------------------------------------INSTALL ANDROID BUILD TOOLS------------------------------------------------
+RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager --update
+RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager "build-tools;$ANDROID_BUILD_TOOLS_VERSION" \
+"platforms;android-$ANDROID_SDK_VERSION" \
+"platform-tools"
+
+# --------------------------------------------------NODEJS, NPM, YARN---------------------------------------------------
+RUN set -ex -o pipefail &&  \
+    curl -fsSL "$NODEJS_URL" | bash - && \
+    curl -fsSL "$YARN_GPG_KEY_URL" | gpg --dearmor | tee /usr/share/keyrings/yarnkey.gpg >/dev/null && \
+    echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] $YARN_URL" | tee /etc/apt/sources.list.d/yarn.list && \
+    apt update && apt install -y nodejs yarn
 
 # -----------------------------------------------------CLOUD TOOLS------------------------------------------------------
 RUN set -ex -o pipefail && \
@@ -131,26 +130,26 @@ RUN set -ex -o pipefail && \
     rclone --version
 
 # -------------------------------------------------------SUMMARY--------------------------------------------------------
-#RUN echo "############################### Versions #####################################" && \
-#    make --version && \
-#    echo "" && \
-#    java -version &&  \
-#    echo "" && \
-#    gradle --version && \
-#    echo "" && \
-#    ruby --version && \
-#    python3 --version &&  \
-#    python2 --version &&  \
-#    pip3 --version && \
-#    echo "" && \
-#    echo "Nodejs: $(node --version)" &&  \
-#    echo "Npm: $(npm --version)" &&  \
-#    echo "Yarn: $(yarn --version)" && \
-#    echo "" && \
-#    docker --version &&  \
-#    docker-compose --version && \
-#    echo "" && \
-#    echo "Kubectl: $(kubectl version --client)" && \
-#    echo "" && \
-#    rclone --version && \
-#    echo "############################### Versions #####################################"
+RUN echo "############################### Versions #####################################" && \
+    make --version && \
+    echo "" && \
+    java -version &&  \
+    echo "" && \
+    gradle --version && \
+    echo "" && \
+    ruby --version && \
+    python3 --version &&  \
+    python2 --version &&  \
+    pip3 --version && \
+    echo "" && \
+    echo "Nodejs: $(node --version)" &&  \
+    echo "Npm: $(npm --version)" &&  \
+    echo "Yarn: $(yarn --version)" && \
+    echo "" && \
+    docker --version &&  \
+    docker-compose --version && \
+    echo "" && \
+    echo "Kubectl: $(kubectl version --client)" && \
+    echo "" && \
+    rclone --version && \
+    echo "############################### Versions #####################################"
