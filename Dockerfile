@@ -16,7 +16,9 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 
 # -------------------------------------------REPOSITORIES---------------------------------------------------------------
 RUN apt-get update && apt-get install -y apt-utils apt-transport-https software-properties-common && \
-    apt-add-repository ppa:git-core/ppa ppa:openjdk-r/ppa -y && apt update
+    apt-add-repository ppa:git-core/ppa -y &&  \
+    apt-add-repository ppa:openjdk-r/ppa -y &&  \
+    apt update
 # ---------------------------------------------ARGUMANTS----------------------------------------------------------------
 ARG TARGETARCH
 
