@@ -53,3 +53,12 @@ RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager "build-tools;$ANDROID_B
 "platforms;android-$ANDROID_SDK_VERSION" \
 "platform-tools"
 RUN echo "ANDROID SDK $ANDROID_BUILD_TOOLS_VERSION INSTALLED"
+
+# ------------------------------------------------------VERSIONS--------------------------------------------------------
+RUN echo "############################### Versions #####################################" && \
+    java -version &&  \
+    echo "" && \
+    gradle --version && \
+    echo "" && \
+    make --version && \
+    echo "############################### Versions #####################################"
