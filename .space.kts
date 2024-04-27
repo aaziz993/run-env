@@ -24,7 +24,7 @@ job("Code format check, analysis and publish") {
     // Users will be able to redefine these parameters in custom job run.
     // See the 'Customize job run' section
     parameters {
-        text("env.os", value = "gradle")
+        text("env.os", value = "ubuntu")
         text("image.name", "{{ run:trigger.git-push.repository }}")
         text("image.version", "1.0.0.${"$"}JB_SPACE_EXECUTION_NUMBER")
         text("vendor", "{{ run:project.key }}")
