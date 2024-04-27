@@ -15,7 +15,7 @@ RUN apt update && \
 ENV GRADLE_VERSION=8.7 \
 GRADLE_URL="https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip" \
 GRADLE_ROOT="/usr/local" \
-GRADLE_FILE="gradle-$GRADLE_VERSION" \
+GRADLE_FILE="gradle-$GRADLE_VERSION"
 RUN \
     cd "$GRADLE_ROOT" && \
     curl -o "$GRADLE_FILE.zip"  $GRADLE_URL && \
