@@ -58,8 +58,7 @@ RUN apt update &&  apt install -y \
 #    python3-matplotlib python3-numpy python3-pip python3-scipy python3-pandas python3-dev pipenv
 
 # ------------------------------------------DOWNLOAD AND INSTALL GRADLE-------------------------------------------------
-RUN mkdir "$GRADLE_ROOT" &&  \
-    cd "$GRADLE_ROOT" && \
+RUN cd "$GRADLE_ROOT" && \
     curl -L -o "$GRADLE_FILE.zip" "$GRADLE_URL" && \
     unzip "$GRADLE_FILE.zip" && \
     rm "$GRADLE_FILE.zip"
