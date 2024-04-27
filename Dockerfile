@@ -6,28 +6,30 @@ MAINTAINER Aziz Atoev <a.atoev93@gmail.com>
 
 USER root
 
-# Support various rvm, nvm etc stuff which requires executing profile scripts (-l)
+# -----------------------------------------CONFIGURATIONS---------------------------------------------------------------
+## Support various rvm, nvm etc stuff which requires executing profile scripts (-l)
 SHELL ["/bin/bash", "-lc"]
 CMD ["/bin/bash", "-l"]
 
-# Set debconf to run non-interactively
+## Set debconf to run non-interactively
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
-# Newest git
-RUN apt-add-repository ppa:git-core/ppa -y && apt update
+# -------------------------------------------REPOSITORIES---------------------------------------------------------------
+RUN apt-get update && apt-get install -y apt-utils apt-transport-https software-properties-common && \
+    apt-add-repository ppa:git-core/ppa -y && apt update
 
 # ---------------------------------------------ARGUMANTS----------------------------------------------------------------
 ARG TARGETARCH
 
 # --------------------------------------------ENVIRONMENT VARIABLES-----------------------------------------------------
-# GRADLE
+## GRADLE
 ENV GRADLE_VERSION=8.7 \
     GRADLE_ROOT="/usr/local/gradle"
 ENV GRADLE_URL="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
     GRADLE_FILE="gradle-$GRADLE_VERSION"
 ENV PATH="$GRADLE_ROOT/$GRADLE_FILE/bin:$PATH"
 
-# ANDROID
+## ANDROID
 ENV TOOLS_REVISION="11076708"
 ENV ANDROID_SDK_VERSION=33 \
     ANDROID_BUILD_TOOLS_VERSION=33.0.1 \
@@ -36,14 +38,13 @@ ENV ANDROID_SDK_VERSION=33 \
 ENV ANDROID_SDK_FILE="android-sdk-$ANDROID_SDK_VERSION.zip" \
     PATH="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/cmdline-tools/tools/bin:$PATH"
 
-# NODEJS
+## NODEJS
 ENV NODEJS_VERSION="20.x" \
     YARN_URL="https://dl.yarnpkg.com/debian"
 ENV NODEJS_URL="https://deb.nodesource.com/setup_$NODEJS_VERSION"
 
 # --------------------------------------------INSTALL BASE PACKAGES-----------------------------------------------------
-RUN apt-get update &&  \
-    apt-get install -y apt-utils apt-transport-https software-properties-common \
+RUN apt update &&  apt install -y \
     # Useful utilities \
     curl unzip wget socat man-db rsync moreutils vim lsof xxd gnupg \
     bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev \
@@ -81,7 +82,7 @@ RUN set -ex -o pipefail &&  \
     curl -fsSL "$NODEJS_URL" | bash - && \
     curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarnkey.gpg >/dev/null && \
     echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] $YARN_URL stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-    apt-get update && apt-get install -y nodejs yarn
+    apt update && apt install -y nodejs yarn
 
 # -----------------------------------------------------CLOUD TOOLS------------------------------------------------------
 RUN set -ex -o pipefail && \
@@ -89,12 +90,12 @@ RUN set -ex -o pipefail && \
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
       $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list && \
-    apt-get install -y docker.io && \
+    apt install -y docker.io && \
     docker --version && \
     # Kubernetes \
     curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list && \
-    apt-get update && apt-get install -y kubectl && \
+    apt update && apt install -y kubectl && \
     kubectl version --client && \
     # rclone \
     curl -fsSL https://downloads.rclone.org/v1.56.2/rclone-v1.56.2-linux-$TARGETARCH.zip -o /tmp/rclone.zip && \
