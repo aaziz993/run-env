@@ -37,8 +37,8 @@ RUN apt update && \
 RUN mkdir "$GRADLE_ROOT" &&  \
     cd "$GRADLE_ROOT" && \
     curl -o "$GRADLE_FILE.zip" "$GRADLE_URL" && \
-    ls && \
-    unzip "$GRADLE_FILE.zip" && \
+    ls -l && \
+#    unzip "$GRADLE_FILE.zip" && \
 #    rm "$GRADLE_FILE.zip" && \
     echo "GRADLE $GRADLE_VERSION INSTALLED"
 
