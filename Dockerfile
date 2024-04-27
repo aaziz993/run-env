@@ -122,7 +122,7 @@ RUN set -ex -o pipefail && \
     kubectl version --client && \
     # RClone \
     cd /usr/local && \
-    curl -fsSL "$RCLONE_URL" -o "$RCLONE_FILE" && \
+    curl -fsSL "$RCLONE_URL" -o "$RCLONE_FILE.zip" && \
     unzip "$RCLONE_FILE.zip" && \
     rm "$RCLONE_FILE.zip" && \
     cp "$RCLONE_FILE/rclone" /usr/bin/ && \
