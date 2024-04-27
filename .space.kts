@@ -32,15 +32,15 @@ job("Code format check, analysis and publish") {
     }
 
     container("Spotless code format check", "{{ env.os }}") {
-        kotlinScript { api ->
-            api.gradlew("spotlessCheck", "{{ gradlew_option }}")
+        shellScript {
+            content = "make format-check"
         }
     }
 
     container("Sonar continuous inspection of code quality and security", "{{ env.os }}") {
         env["SONAR_TOKEN"] = "{{ project:sonar.token }}"
-        kotlinScript { api ->
-            api.gradlew("sonar", "{{ gradlew_option }}")
+        shellScript {
+            content = "make quality check"
         }
     }
 
