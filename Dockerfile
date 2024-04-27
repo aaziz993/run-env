@@ -44,10 +44,11 @@ ENV NODEJS_VERSION="20.x" \
     YARN_URL="https://dl.yarnpkg.com/debian"
 ENV NODEJS_URL="https://deb.nodesource.com/setup_$NODEJS_VERSION"
 
-## --------------------------------------------INSTALL BASE PACKAGES-----------------------------------------------------
-#RUN apt update &&  apt install -y \
-#    # Useful utilities \
-#    curl unzip wget socat man-db rsync moreutils vim lsof xxd gnupg \
+# --------------------------------------------INSTALL BASE PACKAGES-----------------------------------------------------
+RUN apt update &&  apt install -y \
+    # Useful utilities \
+    curl  \
+#    unzip wget socat man-db rsync moreutils vim lsof xxd gnupg \
 #    bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev \
 #    # Setup Java \
 #    openjdk-17-jdk-headless \
