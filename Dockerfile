@@ -28,13 +28,11 @@ RUN apt update && \
 RUN echo "BASE PACKAGES INSTALLED"
 
 # ------------------------------------------DOWNLOAD AND INSTALL GRADLE-------------------------------------------------
-RUN \
-    cd "$GRADLE_ROOT" && \
+RUN cd "$GRADLE_ROOT" && \
     curl -o "$GRADLE_FILE.zip"  $GRADLE_URL && \
     unzip "$GRADLE_FILE.zip" && \
     rm "$GRADLE_FILE.zip"
 RUN echo "GRADLE $GRADLE_VERSION INSTALLED"
-
 
 # ----------------------------------------------DOWNLOAD ANDROID SDK----------------------------------------------------
 RUN mkdir "$ANDROID_SDK_ROOT" .android "$ANDROID_SDK_ROOT/cmdline-tools" && \
