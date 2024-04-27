@@ -20,12 +20,8 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 #    apt-add-repository ppa:openjdk-r/ppa -y &&  \
 #    apt update
 # ---------------------------------------------ARGUMANTS----------------------------------------------------------------
-ARG TARGETARCH
 
 # --------------------------------------------ENVIRONMENT VARIABLES-----------------------------------------------------
-## GOOGLE
-ENV GOOGLE_GPG_KEY_URL="https://packages.cloud.google.com/apt/doc/apt-key.gpg"
-
 ## GRADLE
 ENV GRADLE_VERSION=8.7 \
     GRADLE_ROOT="/usr/local/gradle"
@@ -57,10 +53,10 @@ ENV KUBERNETES_VERSION="v1.30"
 ENV KUBERNETES_URL="https://pkgs.k8s.io/core:/stable:/$KUBERNETES_VERSION/deb/ /" \
     KUBERNETES_GPG_KEY_URL="https://pkgs.k8s.io/core:/stable:/$KUBERNETES_VERSION/deb/Release.key"
 
-
 ## RCLONE
-ENV RCLONE_URL="https://downloads.rclone.org/v1.56.2/rclone-v1.56.2-linux-$TARGETARCH.zip"
-
+ENV RCLONE_VERSION="v1.66.0"
+ENV RCLONE_URL="https://downloads.rclone.org/rclone-$RCLONE_VERSION-linux-amd64.zip"
+    RCLONE_FILE="rclone-$RCLONE_VERSION"
 # --------------------------------------------INSTALL BASE PACKAGES-----------------------------------------------------
 RUN apt update &&  apt install -y \
     # Useful utilities \
@@ -115,51 +111,47 @@ RUN set -ex -o pipefail && \
     apt update && \
     apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin && \
     docker --version && \
+    # Docker compose \
+    apt update && \
+    apt install -y docker-compose-plugin && \
+    docker compose version && \
     # Kubernetes \
     curl -fsSL "$KUBERNETES_GPG_KEY_URL" | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg && \
     echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] $KUBERNETES_URL" | tee /etc/apt/sources.list.d/kubernetes.list && \
     apt update && apt install -y kubectl && \
-    kubectl version --client
-#    # RClone \
-#    curl -fsSL $RCLONE_URL -o /tmp/rclone.zip && \
-#    mkdir -p /tmp/rclone.extracted && unzip -q /tmp/rclone.zip -d /tmp/rclone.extraced && \
-#    install -g root -o root -m 0755 -v /tmp/rclone.extraced/*/rclone /usr/local/bin && \
-#    rm -rf /tmp/rclone.extraced /tmp/rclone.zip && \
-#    rclone --version
-#
-### Docker compose (https://docs.docker.com/compose/install/)
-### There are no arm64 builds of docker-compose for version 1.x.x, so version 2.x.x is used
-#RUN if [ "$TARGETARCH" == "arm64" ] ; \
-#      then DOCKER_COMPOSE_VERSION=v2.14.0 ; \
-#      else DOCKER_COMPOSE_VERSION=1.29.2 ; \
-#    fi && \
-#    set -ex -o pipefail && \
-#    curl -fsSL "https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
-#    chmod +x /usr/local/bin/docker-compose && \
-#    rm -f /usr/bin/docker-compose && \
-#    ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+    kubectl version --client && \
+    # RClone \
+    cd /usr/local && \
+    curl -fsSL "$RCLONE_URL" -o "$RCLONE_FILE" && \
+    unzip "$RCLONE_FILE.zip" && \
+    rm "$RCLONE_FILE.zip" && \
+    cp "$RCLONE_FILE/rclone" /usr/bin/ && \
+    rm "$RCLONE_FILE" && \
+    chown root:root /usr/bin/rclone && \
+    chmod 755 /usr/bin/rclone && \
+    rclone --version
 
 # -------------------------------------------------------SUMMARY--------------------------------------------------------
-RUN echo "############################### Versions #####################################" && \
-    make --version && \
-    echo "" && \
-    java -version &&  \
-    echo "" && \
-    gradle --version && \
-    echo "" && \
-    ruby --version && \
-    python3 --version &&  \
-    python2 --version &&  \
-    pip3 --version && \
-    echo "" && \
-    echo "Nodejs: $(node --version)" &&  \
-    echo "Npm: $(npm --version)" &&  \
-    echo "Yarn: $(yarn --version)" && \
-    echo "" && \
-    docker --version &&  \
-    docker-compose --version && \
-    echo "" && \
-    echo "Kubectl: $(kubectl version --client)" && \
-    echo "" && \
-    rclone --version && \
-    echo "############################### Versions #####################################"
+#RUN echo "############################### Versions #####################################" && \
+#    make --version && \
+#    echo "" && \
+#    java -version &&  \
+#    echo "" && \
+#    gradle --version && \
+#    echo "" && \
+#    ruby --version && \
+#    python3 --version &&  \
+#    python2 --version &&  \
+#    pip3 --version && \
+#    echo "" && \
+#    echo "Nodejs: $(node --version)" &&  \
+#    echo "Npm: $(npm --version)" &&  \
+#    echo "Yarn: $(yarn --version)" && \
+#    echo "" && \
+#    docker --version &&  \
+#    docker-compose --version && \
+#    echo "" && \
+#    echo "Kubectl: $(kubectl version --client)" && \
+#    echo "" && \
+#    rclone --version && \
+#    echo "############################### Versions #####################################"
