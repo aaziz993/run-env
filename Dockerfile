@@ -14,13 +14,13 @@ CMD ["/bin/bash", "-l"]
 ## Set debconf to run non-interactively
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
-## -------------------------------------------REPOSITORIES---------------------------------------------------------------
-#RUN apt-get update && apt-get install -y apt-utils apt-transport-https software-properties-common && \
-#    apt-add-repository ppa:git-core/ppa -y &&  \
-#    apt-add-repository ppa:openjdk-r/ppa -y &&  \
-#    apt update
-## ---------------------------------------------ARGUMANTS----------------------------------------------------------------
-#ARG TARGETARCH
+# -------------------------------------------REPOSITORIES---------------------------------------------------------------
+RUN apt-get update && apt-get install -y apt-utils apt-transport-https software-properties-common && \
+    apt-add-repository ppa:git-core/ppa -y &&  \
+    apt-add-repository ppa:openjdk-r/ppa -y &&  \
+    apt update
+# ---------------------------------------------ARGUMANTS----------------------------------------------------------------
+ARG TARGETARCH
 
 # --------------------------------------------ENVIRONMENT VARIABLES-----------------------------------------------------
 ## GRADLE
@@ -47,15 +47,14 @@ ENV NODEJS_URL="https://deb.nodesource.com/setup_$NODEJS_VERSION"
 # --------------------------------------------INSTALL BASE PACKAGES-----------------------------------------------------
 RUN apt update &&  apt install -y \
     # Useful utilities \
-    curl unzip
-#     wget socat man-db rsync moreutils vim lsof xxd gnupg \
-#    bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev \
-#    # Setup Java \
-#    openjdk-17-jdk-headless \
-#    # Setup Ruby \
-#    ruby-full \
-#    # Python 3 \
-#    python3-matplotlib python3-numpy python3-pip python3-scipy python3-pandas python3-dev pipenv
+    curl unzip wget socat man-db rsync moreutils vim lsof xxd gnupg \
+    bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev \
+    # Setup Java \
+    openjdk-17-jdk-headless \
+    # Setup Ruby \
+    ruby-full \
+    # Python 3 \
+    python3-matplotlib python3-numpy python3-pip python3-scipy python3-pandas python3-dev pipenv
 
 # ------------------------------------------DOWNLOAD AND INSTALL GRADLE-------------------------------------------------
 RUN mkdir -p "$GRADLE_ROOT" &&  \
