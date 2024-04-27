@@ -17,7 +17,7 @@ ENV TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-1
 ANDROID_SDK_ROOT="/usr/local/android-sdk" \
 ANDROID_SDK_VERSION=33 \
 ANDROID_BUILD_TOOLS_VERSION=33.0.1 \
-ANDROID_SDK_FILE="android-sdk-$ANDROID_SDK_VERSION.zip"
+ANDROID_SDK_FILE="android-sdk-$ANDROID_SDK_VERSION.zip" \
 PATH="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/cmdline-tools/tools/bin:$PATH"
 
 # --------------------------------------------INSTALL BASE PACKAGES-----------------------------------------------------
