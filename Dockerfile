@@ -10,6 +10,12 @@ USER root
 SHELL ["/bin/bash", "-lc"]
 CMD ["/bin/bash", "-l"]
 
+# Set debconf to run non-interactively
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+
+# Newest git
+RUN apt-add-repository ppa:git-core/ppa -y && apt update
+
 # ---------------------------------------------ARGUMANTS----------------------------------------------------------------
 ARG TARGETARCH
 
@@ -34,12 +40,6 @@ ENV ANDROID_SDK_FILE="android-sdk-$ANDROID_SDK_VERSION.zip" \
 ENV NODEJS_VERSION="20.x" \
     YARN_URL="https://dl.yarnpkg.com/debian"
 ENV NODEJS_URL="https://deb.nodesource.com/setup_$NODEJS_VERSION"
-
-# Set debconf to run non-interactively
-RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-
-# Newest git
-RUN apt-add-repository ppa:git-core/ppa -y && apt-get update
 
 # --------------------------------------------INSTALL BASE PACKAGES-----------------------------------------------------
 RUN apt-get update &&  \
