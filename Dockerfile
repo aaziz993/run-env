@@ -1,6 +1,10 @@
-FROM ubuntu:24.04 as base
+FROM ubuntu:24.04
 
 MAINTAINER Aziz Atoev <a.atoev93@gmail.com>
+
+# Support various rvm, nvm etc stuff which requires executing profile scripts (-l)
+SHELL ["/bin/bash", "-lc"]
+CMD ["/bin/bash", "-l"]
 
 USER root
 
