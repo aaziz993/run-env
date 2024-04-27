@@ -126,11 +126,11 @@ RUN set -ex -o pipefail && \
     cp "$RCLONE_FILE/rclone" /usr/bin/ && \
     chown root:root /usr/bin/rclone && \
     chmod 755 /usr/bin/rclone && \
-    rm -rf "$RCLONE_FILE" "$RCLONE_FILE.zip" && \
     mkdir -p /usr/local/share/man/man1 && \
-    cp rclone.1 /usr/local/share/man/man1/ && \
+    cp "$RCLONE_FILE/rclone.1" /usr/local/share/man/man1/ && \
     mandb && \
     rclone config && \
+    rm -rf "$RCLONE_FILE" "$RCLONE_FILE.zip" && \
     rclone --version
 
 # -------------------------------------------------------SUMMARY--------------------------------------------------------
