@@ -27,16 +27,16 @@ RUN apt update && \
     apt -y openjdk-17-jdk  \
     install build-essential bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev \
     xxd \
-    gnupg &&  \
-    echo "BASE PACKAGES INSTALLED"
+    gnupg
+RUN echo "BASE PACKAGES INSTALLED"
 
 # ------------------------------------------DOWNLOAD AND INSTALL GRADLE-------------------------------------------------
 RUN \
     cd "$GRADLE_ROOT" && \
     curl -o "$GRADLE_FILE.zip"  $GRADLE_URL && \
     unzip "$GRADLE_FILE.zip" && \
-    rm "$GRADLE_FILE.zip" &&  \
-    echo "GRADLE $GRADLE_VERSION INSTALLED"
+    rm "$GRADLE_FILE.zip"
+RUN echo "GRADLE $GRADLE_VERSION INSTALLED"
 
 
 # ----------------------------------------------DOWNLOAD ANDROID SDK----------------------------------------------------
@@ -46,12 +46,12 @@ RUN mkdir "$ANDROID_SDK_ROOT" .android "$ANDROID_SDK_ROOT/cmdline-tools" && \
     unzip sdk.zip && \
     rm sdk.zip && \
     mv cmdline-tools tools && \
-    yes | $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager --licenses && \
-    echo "ANDROID SDK $ANDROID_SDK INSTALLED"
+    yes | $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager --licenses
+RUN echo "ANDROID SDK $ANDROID_SDK INSTALLED"
 
 # -------------------------------------------INSTALL ANDROID BUILD TOOLS------------------------------------------------
 RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager --update
 RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager "build-tools;$ANDROID_BUILD_TOOLS" \
 "platforms;android-$ANDROID_SDK" \
-"platform-tools" && \
-echo "ANDROID SDK $ANDROID_BUILD_TOOLS INSTALLED"
+"platform-tools"
+RUN echo "ANDROID SDK $ANDROID_BUILD_TOOLS INSTALLED"
