@@ -102,35 +102,35 @@ RUN apt update &&  apt install -y \
 
 # -----------------------------------------------------CLOUD TOOLS------------------------------------------------------
 RUN set -ex -o pipefail && \
-    # Docker \
-    curl -fsSL "$DOCKER_GPG_KEY_URL" | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] $DOCKER_URL \
-      $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list && \
-    apt install -y docker.io && \
-    docker --version && \
+#    # Docker \
+#    curl -fsSL "$DOCKER_GPG_KEY_URL" | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
+#    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] $DOCKER_URL \
+#      $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list && \
+#    apt install -y docker.io && \
+#    docker --version && \
     # Kubernetes \
     curl -fsSL "$GOOGLE_GPG_KEY_URL" | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg && \
     echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] $KUBERNETES_URL" | tee /etc/apt/sources.list.d/kubernetes.list && \
     apt update && apt install -y kubectl && \
     kubectl version --client && \
-    # RClone \
-    curl -fsSL $RCLONE_URL -o /tmp/rclone.zip && \
-    mkdir -p /tmp/rclone.extracted && unzip -q /tmp/rclone.zip -d /tmp/rclone.extraced && \
-    install -g root -o root -m 0755 -v /tmp/rclone.extraced/*/rclone /usr/local/bin && \
-    rm -rf /tmp/rclone.extraced /tmp/rclone.zip && \
-    rclone --version
-
-## Docker compose (https://docs.docker.com/compose/install/)
-## There are no arm64 builds of docker-compose for version 1.x.x, so version 2.x.x is used
-RUN if [ "$TARGETARCH" == "arm64" ] ; \
-      then DOCKER_COMPOSE_VERSION=v2.14.0 ; \
-      else DOCKER_COMPOSE_VERSION=1.29.2 ; \
-    fi && \
-    set -ex -o pipefail && \
-    curl -fsSL "https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
-    chmod +x /usr/local/bin/docker-compose && \
-    rm -f /usr/bin/docker-compose && \
-    ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+#    # RClone \
+#    curl -fsSL $RCLONE_URL -o /tmp/rclone.zip && \
+#    mkdir -p /tmp/rclone.extracted && unzip -q /tmp/rclone.zip -d /tmp/rclone.extraced && \
+#    install -g root -o root -m 0755 -v /tmp/rclone.extraced/*/rclone /usr/local/bin && \
+#    rm -rf /tmp/rclone.extraced /tmp/rclone.zip && \
+#    rclone --version
+#
+### Docker compose (https://docs.docker.com/compose/install/)
+### There are no arm64 builds of docker-compose for version 1.x.x, so version 2.x.x is used
+#RUN if [ "$TARGETARCH" == "arm64" ] ; \
+#      then DOCKER_COMPOSE_VERSION=v2.14.0 ; \
+#      else DOCKER_COMPOSE_VERSION=1.29.2 ; \
+#    fi && \
+#    set -ex -o pipefail && \
+#    curl -fsSL "https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
+#    chmod +x /usr/local/bin/docker-compose && \
+#    rm -f /usr/bin/docker-compose && \
+#    ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 # -------------------------------------------------------SUMMARY--------------------------------------------------------
 RUN echo "############################### Versions #####################################" && \
