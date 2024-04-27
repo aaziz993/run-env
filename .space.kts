@@ -33,14 +33,14 @@ job("Code format check, analysis and publish") {
 
     container("Spotless code format check", "{{ env.os }}") {
         shellScript {
-            content = "make format-check"
+            content = "apt install -y make && make format-check"
         }
     }
 
     container("Sonar continuous inspection of code quality and security", "{{ env.os }}") {
         env["SONAR_TOKEN"] = "{{ project:sonar.token }}"
         shellScript {
-            content = "make quality check"
+            content = "apt install -y make && make quality-check"
         }
     }
 

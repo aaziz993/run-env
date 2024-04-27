@@ -9,3 +9,7 @@ captures
 .cxx
 local.properties
 xcuserdata
+proguard/*.txt
+target
+out
+
