@@ -12,7 +12,7 @@ USER root
 # GRADLE
 ENV GRADLE_VERSION=8.7 \
 GRADLE_URL="https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip" \
-GRADLE_ROOT="/usr/local" \
+GRADLE_ROOT="/usr/local/gradle" \
 GRADLE_FILE="gradle-$GRADLE_VERSION" \
 PATH="$GRADLE_ROOT/$GRADLE_FILE/bin:$PATH"
 
