@@ -44,18 +44,19 @@ ENV ANDROID_SDK_FILE="android-sdk-$ANDROID_SDK_VERSION.zip" \
 
 ## NODEJS
 ENV NODEJS_VERSION="20.x" \
-    YARN_URL="https://dl.yarnpkg.com/debian"
+    YARN_URL="https://dl.yarnpkg.com/debian stable main"
+    YARN_GPG_KEY_URL="https://dl.yarnpkg.com/debian/pubkey.gpg"
 ENV NODEJS_URL="https://deb.nodesource.com/setup_$NODEJS_VERSION"
 
 ## Docker
 ENV DOCKER_URL="https://download.docker.com/linux/ubuntu"
-ENV DOCKER_GPG_URL="$DOCKER_URL/gpg"
+ENV DOCKER_GPG_KEY_URL="$DOCKER_URL/gpg"
 
 ### Docker compose
 ENV DOCKER_COMPOSE_URL="https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose"
 
 ## Kubernetes
-ENV KUBERNETES_URL="https://pkgs.k8s.io/core:/stable:/v1.28/deb/"
+ENV KUBERNETES_URL="https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /"
 
 ## RCLONE
 ENV RCLONE_URL="https://downloads.rclone.org/v1.56.2/rclone-v1.56.2-linux-$TARGETARCH.zip"
@@ -63,7 +64,7 @@ ENV RCLONE_URL="https://downloads.rclone.org/v1.56.2/rclone-v1.56.2-linux-$TARGE
 # --------------------------------------------INSTALL BASE PACKAGES-----------------------------------------------------
 RUN apt update &&  apt install -y \
     # Useful utilities \
-    curl unzip wget socat man-db rsync moreutils vim lsof xxd gnupg \
+    curl unzip wget socat man-db rsync moreutils vim lsof xxd gnupg make \
     bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev \
     # Setup Java \
     openjdk-17-jdk-headless \
@@ -97,20 +98,20 @@ RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager "build-tools;$ANDROID_B
 # --------------------------------------------------NODEJS, NPM, YARN---------------------------------------------------
 RUN set -ex -o pipefail &&  \
     curl -fsSL "$NODEJS_URL" | bash - && \
-    curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarnkey.gpg >/dev/null && \
-    echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] $YARN_URL stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+    curl -fsSL "$YARN_GPG_KEY_URL" | gpg --dearmor | tee /usr/share/keyrings/yarnkey.gpg >/dev/null && \
+    echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] $YARN_URL" | tee /etc/apt/sources.list.d/yarn.list && \
     apt update && apt install -y nodejs yarn
 
 # -----------------------------------------------------CLOUD TOOLS------------------------------------------------------
 RUN set -ex -o pipefail && \
     # Docker \
-    curl -fsSL "$DOCKER_GPG_URL" | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
+    curl -fsSL "$DOCKER_GPG_KEY_URL" | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] $DOCKER_URL \
       $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list && \
     apt install -y docker.io && \
     docker --version && \
     # Kubernetes \
-    curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg "$GOOGLE_GPG_KEY_URL" && \
+    curl -fsSLo "$GOOGLE_GPG_KEY_URL" | sudo gpg --dearmor -o /usr/share/keyrings/kubernetes-archive-keyring.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] $KUBERNETES_URL /" | tee /etc/apt/sources.list.d/kubernetes.list && \
     apt update && apt install -y kubectl && \
     kubectl version --client && \
