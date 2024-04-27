@@ -124,10 +124,10 @@ RUN set -ex -o pipefail && \
     cd /usr/local && \
     curl -fsSL "$RCLONE_URL" -o "$RCLONE_FILE.zip" && \
     unzip "$RCLONE_FILE.zip" && \
-    rm "$RCLONE_FILE.zip" && \
     cp "$RCLONE_FILE/rclone" /usr/bin/ && \
     chown root:root /usr/bin/rclone && \
     chmod 755 /usr/bin/rclone && \
+    rm -rf "$RCLONE_FILE" "$RCLONE_FILE.zip" && \
     rclone --version
 
 # -------------------------------------------------------SUMMARY--------------------------------------------------------
