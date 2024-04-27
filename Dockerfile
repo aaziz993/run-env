@@ -54,9 +54,9 @@ ENV KUBERNETES_URL="https://pkgs.k8s.io/core:/stable:/$KUBERNETES_VERSION/deb/ /
     KUBERNETES_GPG_KEY_URL="https://pkgs.k8s.io/core:/stable:/$KUBERNETES_VERSION/deb/Release.key"
 
 ## RCLONE
-ENV RCLONE_VERSION="v1.66.0"
-ENV RCLONE_URL="https://downloads.rclone.org/$RCLONE_VERSION/rclone-$RCLONE_VERSION-linux-amd64.zip" \
-    RCLONE_FILE="rclone-$RCLONE_VERSION-linux-amd64"
+ENV RCLON_VERSION="v1.66.0"
+ENV RCLONE_URL="https://downloads.rclone.org/$RCLON_VERSION/rclone-$RCLON_VERSION-linux-amd64.zip" \
+    RCLONE_FILE="rclone-$RCLON_VERSION-linux-amd64"
 # --------------------------------------------INSTALL BASE PACKAGES-----------------------------------------------------
 RUN apt update &&  apt install -y \
     # Useful utilities \
