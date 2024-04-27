@@ -44,7 +44,7 @@ ENV ANDROID_SDK_FILE="android-sdk-$ANDROID_SDK_VERSION.zip" \
 
 ## NODEJS
 ENV NODEJS_VERSION="20.x" \
-    YARN_URL="https://dl.yarnpkg.com/debian stable main"
+    YARN_URL="https://dl.yarnpkg.com/debian stable main" \
     YARN_GPG_KEY_URL="https://dl.yarnpkg.com/debian/pubkey.gpg"
 ENV NODEJS_URL="https://deb.nodesource.com/setup_$NODEJS_VERSION"
 
