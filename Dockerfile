@@ -36,33 +36,33 @@ RUN apt update && \
 # ------------------------------------------DOWNLOAD AND INSTALL GRADLE-------------------------------------------------
 RUN mkdir "$GRADLE_ROOT" &&  \
     cd "$GRADLE_ROOT" && \
-    curl -o "$GRADLE_FILE.zip" "$GRADLE_URL" && \
-    unzip "$GRADLE_FILE.zip" && \
-    rm "$GRADLE_FILE.zip"
-RUN echo "GRADLE $GRADLE_VERSION INSTALLED"
+#    curl -o "$GRADLE_FILE.zip" "$GRADLE_URL" && \
+#    unzip "$GRADLE_FILE.zip" && \
+#    rm "$GRADLE_FILE.zip" && \
+    echo "GRADLE $GRADLE_VERSION INSTALLED"
 
 # ----------------------------------------------DOWNLOAD ANDROID SDK----------------------------------------------------
-RUN mkdir "$ANDROID_SDK_ROOT" .android "$ANDROID_SDK_ROOT/cmdline-tools" && \
-    cd "$ANDROID_SDK_ROOT/cmdline-tools" && \
-    curl -o "$ANDROID_SDK_FILE" "$TOOLS_URL" && \
-    unzip "$ANDROID_SDK_FILE" && \
-    rm "$ANDROID_SDK_FILE" && \
-    mv cmdline-tools tools && \
-    yes | $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager --licenses
-RUN echo "ANDROID SDK $ANDROID_SDK_VERSION INSTALLED"
-
-# -------------------------------------------INSTALL ANDROID BUILD TOOLS------------------------------------------------
-RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager --update
-RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager "build-tools;$ANDROID_BUILD_TOOLS_VERSION" \
-"platforms;android-$ANDROID_SDK_VERSION" \
-"platform-tools"
-RUN echo "ANDROID SDK $ANDROID_BUILD_TOOLS_VERSION INSTALLED"
-
-# ------------------------------------------------------VERSIONS--------------------------------------------------------
-RUN echo "############################### Versions #####################################" && \
-    java -version &&  \
-    echo "" && \
-    gradle --version && \
-    echo "" && \
-    make --version && \
-    echo "############################### Versions #####################################"
+#RUN mkdir "$ANDROID_SDK_ROOT" .android "$ANDROID_SDK_ROOT/cmdline-tools" && \
+#    cd "$ANDROID_SDK_ROOT/cmdline-tools" && \
+#    curl -o "$ANDROID_SDK_FILE" "$TOOLS_URL" && \
+#    unzip "$ANDROID_SDK_FILE" && \
+#    rm "$ANDROID_SDK_FILE" && \
+#    mv cmdline-tools tools && \
+#    yes | $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager --licenses
+#RUN echo "ANDROID SDK $ANDROID_SDK_VERSION INSTALLED"
+#
+## -------------------------------------------INSTALL ANDROID BUILD TOOLS------------------------------------------------
+#RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager --update
+#RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager "build-tools;$ANDROID_BUILD_TOOLS_VERSION" \
+#"platforms;android-$ANDROID_SDK_VERSION" \
+#"platform-tools"
+#RUN echo "ANDROID SDK $ANDROID_BUILD_TOOLS_VERSION INSTALLED"
+#
+## ------------------------------------------------------VERSIONS--------------------------------------------------------
+#RUN echo "############################### Versions #####################################" && \
+#    java -version &&  \
+#    echo "" && \
+#    gradle --version && \
+#    echo "" && \
+#    make --version && \
+#    echo "############################### Versions #####################################"
