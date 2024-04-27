@@ -25,7 +25,7 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 # --------------------------------------------ENVIRONMENT VARIABLES-----------------------------------------------------
 ## GRADLE
 ENV GRADLE_VERSION=8.7 \
-    GRADLE_ROOT="/usr/local/gradle"
+    GRADLE_ROOT="/usr/local"
 ENV GRADLE_URL="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
     GRADLE_FILE="gradle-$GRADLE_VERSION"
 ENV PATH="$GRADLE_ROOT/$GRADLE_FILE/bin:$PATH"
@@ -60,7 +60,7 @@ RUN apt update &&  apt install -y \
 # ------------------------------------------DOWNLOAD AND INSTALL GRADLE-------------------------------------------------
 RUN mkdir "$GRADLE_ROOT" &&  \
     cd "$GRADLE_ROOT" && \
-    curl -o "$GRADLE_FILE.zip" "$GRADLE_URL" && \
+    curl -L -o "$GRADLE_FILE.zip" "$GRADLE_URL" && \
     unzip "$GRADLE_FILE.zip" && \
     rm "$GRADLE_FILE.zip"
 
