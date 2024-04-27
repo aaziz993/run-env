@@ -111,11 +111,11 @@ RUN set -ex -o pipefail && \
     apt install -y docker.io && \
     docker --version && \
     # Kubernetes \
-    curl -fsSLo "$GOOGLE_GPG_KEY_URL" | sudo gpg --dearmor -o /usr/share/keyrings/kubernetes-archive-keyring.gpg && \
+    curl -fsSLo "$GOOGLE_GPG_KEY_URL" | gpg --dearmor -o /usr/share/keyrings/kubernetes-archive-keyring.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] $KUBERNETES_URL /" | tee /etc/apt/sources.list.d/kubernetes.list && \
     apt update && apt install -y kubectl && \
     kubectl version --client && \
-    # rclone \
+    # RClone \
     curl -fsSL $RCLONE_URL -o /tmp/rclone.zip && \
     mkdir -p /tmp/rclone.extracted && unzip -q /tmp/rclone.zip -d /tmp/rclone.extraced && \
     install -g root -o root -m 0755 -v /tmp/rclone.extraced/*/rclone /usr/local/bin && \
