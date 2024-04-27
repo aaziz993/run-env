@@ -59,10 +59,9 @@ ENV NODEJS_URL="https://deb.nodesource.com/setup_$NODEJS_VERSION"
 # ------------------------------------------DOWNLOAD AND INSTALL GRADLE-------------------------------------------------
 RUN mkdir "$GRADLE_ROOT" &&  \
     cd "$GRADLE_ROOT" && \
-    curl -o gradle.zip $GRADLE_URL && \
-    ls -a && \
-    unzip gradle.zip && \
-    rm gradle.zip
+    curl -o "$GRADLE_FILE.zip" "$GRADLE_URL" && \
+    unzip "$GRADLE_FILE.zip" && \
+    rm "$GRADLE_FILE.zip"
 
 # ----------------------------------------------DOWNLOAD ANDROID SDK----------------------------------------------------
 RUN mkdir "$ANDROID_SDK_ROOT" .android "$ANDROID_SDK_ROOT/cmdline-tools" && \
