@@ -25,7 +25,7 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 # --------------------------------------------ENVIRONMENT VARIABLES-----------------------------------------------------
 ## GRADLE
 ENV GRADLE_VERSION=8.7 \
-    GRADLE_ROOT="/usr/local"
+    GRADLE_ROOT="/usr/local/gradle"
 ENV GRADLE_URL="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
     GRADLE_FILE="gradle-$GRADLE_VERSION"
 ENV PATH="$GRADLE_ROOT/$GRADLE_FILE/bin:$PATH"
@@ -58,15 +58,16 @@ RUN apt update &&  apt install -y \
 #    python3-matplotlib python3-numpy python3-pip python3-scipy python3-pandas python3-dev pipenv
 
 # ------------------------------------------DOWNLOAD AND INSTALL GRADLE-------------------------------------------------
-RUN cd "$GRADLE_ROOT" && \
-    curl -o "$GRADLE_FILE.zip" "$GRADLE_URL" && \
+RUN mkdir -p "$GRADLE_ROOT" &&  \
+    cd "$GRADLE_ROOT" && \
+    curl -L "$GRADLE_URL" -o "$GRADLE_FILE.zip" && \
     unzip "$GRADLE_FILE.zip" && \
     rm "$GRADLE_FILE.zip"
 
 # ----------------------------------------------DOWNLOAD ANDROID SDK----------------------------------------------------
-RUN mkdir "$ANDROID_SDK_ROOT" .android "$ANDROID_SDK_ROOT/cmdline-tools" && \
+RUN mkdir -p "$ANDROID_SDK_ROOT" .android "$ANDROID_SDK_ROOT/cmdline-tools" && \
     cd "$ANDROID_SDK_ROOT/cmdline-tools" && \
-    curl -o "$ANDROID_SDK_FILE" "$TOOLS_URL" && \
+    curl -L "$TOOLS_URL" -o "$ANDROID_SDK_FILE"  && \
     unzip "$ANDROID_SDK_FILE" && \
     rm "$ANDROID_SDK_FILE" && \
     mv cmdline-tools tools && \
