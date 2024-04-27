@@ -15,10 +15,10 @@ CMD ["/bin/bash", "-l"]
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
 # -------------------------------------------REPOSITORIES---------------------------------------------------------------
-RUN apt-get update && apt-get install -y apt-utils apt-transport-https software-properties-common && \
-    apt-add-repository ppa:git-core/ppa -y &&  \
-    apt-add-repository ppa:openjdk-r/ppa -y &&  \
-    apt update
+#RUN apt-get update && apt-get install -y apt-utils apt-transport-https software-properties-common && \
+#    apt-add-repository ppa:git-core/ppa -y &&  \
+#    apt-add-repository ppa:openjdk-r/ppa -y &&  \
+#    apt update
 # ---------------------------------------------ARGUMANTS----------------------------------------------------------------
 ARG TARGETARCH
 
@@ -61,43 +61,44 @@ ENV RCLONE_URL="https://downloads.rclone.org/v1.56.2/rclone-v1.56.2-linux-$TARGE
 # --------------------------------------------INSTALL BASE PACKAGES-----------------------------------------------------
 RUN apt update &&  apt install -y \
     # Useful utilities \
-    curl unzip wget socat man-db rsync moreutils vim lsof xxd gnupg make \
-    bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev \
-    # Setup Java \
-    openjdk-17-jdk-headless \
-    # Setup Ruby \
-    ruby-full \
-    # Python 3 \
-    python3-matplotlib python3-numpy python3-pip python3-scipy python3-pandas python3-dev pipenv
-
-# ------------------------------------------DOWNLOAD AND INSTALL GRADLE-------------------------------------------------
-RUN mkdir -p "$GRADLE_ROOT" &&  \
-    cd "$GRADLE_ROOT" && \
-    curl -fsSL "$GRADLE_URL" -o "$GRADLE_FILE.zip" && \
-    unzip "$GRADLE_FILE.zip" && \
-    rm "$GRADLE_FILE.zip"
-
-# ----------------------------------------------DOWNLOAD ANDROID SDK----------------------------------------------------
-RUN mkdir -p "$ANDROID_SDK_ROOT" .android "$ANDROID_SDK_ROOT/cmdline-tools" && \
-    cd "$ANDROID_SDK_ROOT/cmdline-tools" && \
-    curl -fsSL "$TOOLS_URL" -o "$ANDROID_SDK_FILE"  && \
-    unzip "$ANDROID_SDK_FILE" && \
-    rm "$ANDROID_SDK_FILE" && \
-    mv cmdline-tools tools && \
-    yes | $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager --licenses
-
-# -------------------------------------------INSTALL ANDROID BUILD TOOLS------------------------------------------------
-RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager --update
-RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager "build-tools;$ANDROID_BUILD_TOOLS_VERSION" \
-"platforms;android-$ANDROID_SDK_VERSION" \
-"platform-tools"
-
-# --------------------------------------------------NODEJS, NPM, YARN---------------------------------------------------
-RUN set -ex -o pipefail &&  \
-    curl -fsSL "$NODEJS_URL" | bash - && \
-    curl -fsSL "$YARN_GPG_KEY_URL" | gpg --dearmor | tee /usr/share/keyrings/yarnkey.gpg >/dev/null && \
-    echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] $YARN_URL" | tee /etc/apt/sources.list.d/yarn.list && \
-    apt update && apt install -y nodejs yarn
+    curl unzip  \
+#    wget socat man-db rsync moreutils vim lsof xxd gnupg make \
+#    bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev \
+#    # Setup Java \
+#    openjdk-17-jdk-headless \
+#    # Setup Ruby \
+#    ruby-full \
+#    # Python 3 \
+#    python3-matplotlib python3-numpy python3-pip python3-scipy python3-pandas python3-dev pipenv
+#
+## ------------------------------------------DOWNLOAD AND INSTALL GRADLE-------------------------------------------------
+#RUN mkdir -p "$GRADLE_ROOT" &&  \
+#    cd "$GRADLE_ROOT" && \
+#    curl -fsSL "$GRADLE_URL" -o "$GRADLE_FILE.zip" && \
+#    unzip "$GRADLE_FILE.zip" && \
+#    rm "$GRADLE_FILE.zip"
+#
+## ----------------------------------------------DOWNLOAD ANDROID SDK----------------------------------------------------
+#RUN mkdir -p "$ANDROID_SDK_ROOT" .android "$ANDROID_SDK_ROOT/cmdline-tools" && \
+#    cd "$ANDROID_SDK_ROOT/cmdline-tools" && \
+#    curl -fsSL "$TOOLS_URL" -o "$ANDROID_SDK_FILE"  && \
+#    unzip "$ANDROID_SDK_FILE" && \
+#    rm "$ANDROID_SDK_FILE" && \
+#    mv cmdline-tools tools && \
+#    yes | $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager --licenses
+#
+## -------------------------------------------INSTALL ANDROID BUILD TOOLS------------------------------------------------
+#RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager --update
+#RUN $ANDROID_SDK_ROOT/cmdline-tools/tools/bin/sdkmanager "build-tools;$ANDROID_BUILD_TOOLS_VERSION" \
+#"platforms;android-$ANDROID_SDK_VERSION" \
+#"platform-tools"
+#
+## --------------------------------------------------NODEJS, NPM, YARN---------------------------------------------------
+#RUN set -ex -o pipefail &&  \
+#    curl -fsSL "$NODEJS_URL" | bash - && \
+#    curl -fsSL "$YARN_GPG_KEY_URL" | gpg --dearmor | tee /usr/share/keyrings/yarnkey.gpg >/dev/null && \
+#    echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] $YARN_URL" | tee /etc/apt/sources.list.d/yarn.list && \
+#    apt update && apt install -y nodejs yarn
 
 # -----------------------------------------------------CLOUD TOOLS------------------------------------------------------
 RUN set -ex -o pipefail && \
