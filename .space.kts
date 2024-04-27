@@ -24,21 +24,20 @@ job("Code format check, analysis and publish") {
     // Users will be able to redefine these parameters in custom job run.
     // See the 'Customize job run' section
     parameters {
-        text("env_os", value = "gradle")
-        text("gradlew_option", value = "--no-configuration-cache")
-        text("image_name", "{{ run:trigger.git-push.repository }}")
-        text("image_version", "1.0.0.${"$"}JB_SPACE_EXECUTION_NUMBER")
+        text("env.os", value = "gradle")
+        text("image.name", "{{ run:trigger.git-push.repository }}")
+        text("image.version", "1.0.0.${"$"}JB_SPACE_EXECUTION_NUMBER")
         text("vendor", "{{ run:project.key }}")
-        text("space_repository", "aaziz93.registry.jetbrains.space/p/aaziz-93/containers")
+        text("space.repository", "aaziz93.registry.jetbrains.space/p/aaziz-93/containers")
     }
 
-    container("Spotless code format check", "{{ env_os }}") {
+    container("Spotless code format check", "{{ env.os }}") {
         kotlinScript { api ->
             api.gradlew("spotlessCheck", "{{ gradlew_option }}")
         }
     }
 
-    container("Sonar continuous inspection of code quality and security", "{{ env_os }}") {
+    container("Sonar continuous inspection of code quality and security", "{{ env.os }}") {
         env["SONAR_TOKEN"] = "{{ project:sonar.token }}"
         kotlinScript { api ->
             api.gradlew("sonar", "{{ gradlew_option }}")
@@ -54,11 +53,11 @@ job("Code format check, analysis and publish") {
                 // image labels
                 labels["vendor"] = "{{ vendor }}"
 
-                val spaceRepository = "{{ space_repository }}/{{ image_name }}"
+                val spaceRepository = "{{ space.repository }}/{{ image.name }}"
                 // image tags
                 tags {
                     // use current job run number as a tag - '0.0.run_number'
-                    +"$spaceRepository:{{ image_version }}"
+                    +"$spaceRepository:{{ image.version }}"
                     +"$spaceRepository:latest"
                 }
             }
@@ -79,9 +78,9 @@ job("Code format check, analysis and publish") {
                 file = "./Dockerfile"
                 labels["vendor"] = "{{ vendor }}"
 
-                val dockerHubRepository = "{{ project:dockerhub.username }}/{{ image_name }}"
+                val dockerHubRepository = "{{ project:dockerhub.username }}/{{ image.name }}"
                 tags {
-                    +"$dockerHubRepository:{{ image_version }}"
+                    +"$dockerHubRepository:{{ image.version }}"
                     +"$dockerHubRepository:latest"
                 }
             }
