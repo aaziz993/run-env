@@ -25,7 +25,6 @@ job("Code format check, analysis and publish") {
     // See the 'Customize job run' section
     parameters {
         text("env_os", value = "gradle")
-        text("gradlew_option", value = "--no-configuration-cache")
         text("image_name", "{{ run:trigger.git-push.repository }}")
         text("image_version", "1.0.0.${"$"}JB_SPACE_EXECUTION_NUMBER")
         text("vendor", "{{ run:project.key }}")
@@ -34,14 +33,14 @@ job("Code format check, analysis and publish") {
 
     container("Spotless code format check", "{{ env_os }}") {
         kotlinScript { api ->
-            api.gradlew("spotlessCheck {{ gradlew_option }}")
+            api.gradlew("spotlessCheck","--no-configuration-cache")
         }
     }
 
     container("Sonar continuous inspection of code quality and security", "{{ env_os }}") {
         env["SONAR_TOKEN"] = "{{ project:sonar.token }}"
         kotlinScript { api ->
-            api.gradlew("sonar {{ gradlew_option }}")
+            api.gradlew("sonar","--no-configuration-cache")
         }
     }
 
