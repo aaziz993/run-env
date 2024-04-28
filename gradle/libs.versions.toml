@@ -1,11 +1,13 @@
 [versions]
 spotless = "6.25.0"
 sonarqube = "5.0.0.4638"
+docker-remote-api = "9.4.0"
 
 [libraries]
 
 [plugins]
-spotless = { id = "com.diffplug.spotless",version.ref="spotless"}
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
+docker-remote-api = { id = "com.bmuschko.docker-remote-api", version.ref = "docker-remote-api" }
 
 [bundles]
