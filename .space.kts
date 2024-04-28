@@ -16,7 +16,14 @@
 
 job("Code format check, analysis and publish") {
     startOn {
-        gitPush { enabled = true }
+        // Run on every commit...
+        gitPush {
+            enabled = true
+            // Only to the main branch
+            anyBranchMatching {
+                +"refs/heads/main"
+            }
+        }
     }
 
     // To get a parameter in a job, specify its name in a string inside double curly braces: "{{ my-param }}".
@@ -24,7 +31,8 @@ job("Code format check, analysis and publish") {
     // Users will be able to redefine these parameters in custom job run.
     // See the 'Customize job run' section
     parameters {
-        text("env.os", value = "gradle")
+        text("branch", "{{ run:trigger.git-push.ref }}")
+        text("env.os", "gradle")
         text("image.name", "{{ run:trigger.git-push.repository }}")
         text("image.version", "1.0.0.${"$"}JB_SPACE_EXECUTION_NUMBER")
         text("vendor", "{{ run:project.key }}")
