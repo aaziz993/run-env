@@ -42,7 +42,9 @@ job("Code format check, analysis and publish") {
     container("Spotless code format check", "{{ env.os }}") {
         shellScript {
             content = """
-                apt-get install -y make
+                add-apt-repository ppa:chris-lea/munin-plugins
+                apt update
+                apt install -y make
             """
         }
     }
