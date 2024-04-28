@@ -1,4 +1,4 @@
-# Ubuntu Jammy (22.04 LTS) default argument (BASE_IMAGE) value in [Dockerfile](Dockerfile). It can be set to another version during build.
+# Default image Ubuntu Jammy (22.04 LTS) set by argument (BASE_IMAGE) in [Dockerfile](Dockerfile). It can be set to another image during build.
 
 ## Why not Ubuntu Noble (24.04 LTS)?
 
