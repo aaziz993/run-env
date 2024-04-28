@@ -41,7 +41,10 @@ job("Code format check, analysis and publish") {
 
     container("Spotless code format check", "{{ env.os }}") {
         shellScript {
-            content = "apt install -y make"
+            content = """
+                echo Install Make
+                apt install -y make
+            """
         }
     }
 
