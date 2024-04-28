@@ -20,9 +20,9 @@ job("Code format check, analysis and publish") {
         gitPush {
             enabled = true
             // Only to the main branch
-            anyBranchMatching {
-                +"refs/heads/main"
-            }
+//            anyBranchMatching {
+//                +"refs/heads/main"
+//            }
         }
     }
 
