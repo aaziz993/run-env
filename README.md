@@ -1,8 +1,8 @@
-# Default image Ubuntu Jammy (22.04 LTS) set by argument (BASE_IMAGE) in [Dockerfile](Dockerfile). It can be set to another image during build.
+# Default image Ubuntu latest LTS version. For the moment Ubuntu Noble (24.04)
 
-## Why not Ubuntu Noble (24.04 LTS)?
+## Issue
 
-### It is not supported by terraform.
+### It is not supported by terraform. Therefore set other Ubuntu version (e.g. ubuntu:jammy) by argument (BASE_IMAGE) during build.
 
 ## What are installed?
 
