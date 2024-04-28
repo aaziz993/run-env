@@ -15,14 +15,12 @@ CMD ["/bin/bash", "-l"]
 ## Set debconf to run non-interactively
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
-# -------------------------------------------REPOSITORIES---------------------------------------------------------------
-RUN apt-get update && apt-get install -y apt-utils apt-transport-https software-properties-common && \
-    apt-add-repository ppa:git-core/ppa -y &&  \
-    apt-add-repository ppa:openjdk-r/ppa -y &&  \
-    apt update
 # ---------------------------------------------ARGUMANTS----------------------------------------------------------------
 
 # --------------------------------------------ENVIRONMENT VARIABLES-----------------------------------------------------
+## JDK
+ENV JDK_VERSION=17
+
 ## GRADLE
 ENV GRADLE_VERSION=8.7 \
     GRADLE_ROOT="/usr/local/gradle"
@@ -58,17 +56,25 @@ ENV KUBERNETES_URL="https://pkgs.k8s.io/core:/stable:/$KUBERNETES_VERSION/deb/ /
 ENV RCLON_VERSION="v1.66.0"
 ENV RCLONE_URL="https://downloads.rclone.org/$RCLON_VERSION/rclone-$RCLON_VERSION-linux-amd64.zip" \
     RCLONE_FILE="rclone-$RCLON_VERSION-linux-amd64"
+
+## Hashicorp
+ENV HASHICORP_URL="https://apt.releases.hashicorp.com"
+ENV HASHICORP_GPG_KEY_URL="$HASHICORP_URL/gpg"
+
 # --------------------------------------------INSTALL BASE PACKAGES-----------------------------------------------------
-RUN apt update &&  apt install -y \
+RUN apt-get update && apt-get install -y apt-utils apt-transport-https software-properties-common && \
+    apt-add-repository ppa:git-core/ppa -y &&  \
+    apt-add-repository ppa:openjdk-r/ppa -y &&  \
+    apt update && apt install -y \
     # Useful utilities \
-    ca-certificates curl unzip gnupg xxd make wget socat man-db rsync moreutils vim lsof  \
+    ca-certificates curl lsb-release unzip gnupg xxd make wget socat man-db rsync moreutils vim lsof  \
     bzip2 libassuan-dev libgcrypt20-dev libgpg-error-dev libksba-dev libnpth0-dev \
     # Setup Java \
-    openjdk-17-jdk-headless \
+    "openjdk-${JDK_VERSION}-jdk-headless" \
     # Setup Ruby \
     ruby-full \
     # Python 3 \
-    python3-matplotlib python3-numpy python3-pip python3-scipy python3-pandas python3-dev pipenv
+    python3-matplotlib python3-numpy python3-pip python3-scipy python3-pandas python3-dev pipenv && \
 
 # ------------------------------------------DOWNLOAD AND INSTALL GRADLE-------------------------------------------------
 RUN mkdir -p "$GRADLE_ROOT" &&  \
@@ -117,7 +123,8 @@ RUN set -ex -o pipefail && \
     docker compose version && \
     # Kubernetes \
     curl -fsSL "$KUBERNETES_GPG_KEY_URL" | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg && \
-    echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] $KUBERNETES_URL" | tee /etc/apt/sources.list.d/kubernetes.list && \
+    echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] $KUBERNETES_URL" |  \
+    tee /etc/apt/sources.list.d/kubernetes.list && \
     apt update && apt install -y kubectl && \
     kubectl version --client && \
     # RClone \
@@ -132,6 +139,21 @@ RUN set -ex -o pipefail && \
     mandb && \
     rm -rf "$RCLONE_FILE" "$RCLONE_FILE.zip" && \
     rclone --version
+
+# --------------------------------------------INFRASTRUCTURE AS CODE TOOLS----------------------------------------------
+
+RUN set -ex -o pipefail && \
+    # Terraform \
+    wget -O- "$HASHICORP_GPG_KEY_URL" | gpg --dearmor |  \
+    tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null && \
+    echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+    $HASHICORP_URL $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list && \
+    apt update && \
+    apt install terraform && \
+    terraform -v && \
+    # Terraspace
+    gem -f install terraspace && \
+    terraspace version
 
 # -------------------------------------------------------SUMMARY--------------------------------------------------------
 RUN echo "############################### Versions #####################################" && \
@@ -155,4 +177,8 @@ RUN echo "############################### Versions #############################
     echo "Kubectl: $(kubectl version --client)" && \
     echo "" && \
     rclone --version && \
+    echo "" && \
+    terraform -v && \
+    echo "" && \
+    terraspace version && \
     echo "############################### Versions #####################################"
