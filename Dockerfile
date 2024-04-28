@@ -74,7 +74,7 @@ RUN apt-get update && apt-get install -y apt-utils apt-transport-https software-
     # Setup Ruby \
     ruby-full \
     # Python 3 \
-    python3-matplotlib python3-numpy python3-pip python3-scipy python3-pandas python3-dev pipenv && \
+    python3-matplotlib python3-numpy python3-pip python3-scipy python3-pandas python3-dev pipenv
 
 # ------------------------------------------DOWNLOAD AND INSTALL GRADLE-------------------------------------------------
 RUN mkdir -p "$GRADLE_ROOT" &&  \
