@@ -45,7 +45,7 @@ job("Code format check, quality check and publish") {
                 add-apt-repository ppa:chris-lea/munin-plugins
                 apt update
                 apt install -y make
-                make format check
+                make format-check
             """.trimIndent()
         }
     }
@@ -84,6 +84,7 @@ job("Code format check, quality check and publish") {
         host("Publish to DockerHub") {
             // Before running the scripts, the host machine will log in to
             // the registries specified in connections.
+            @Use
             dockerRegistryConnections {
                 // specify connection key
                 +"docker_hub"
