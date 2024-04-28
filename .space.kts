@@ -84,7 +84,6 @@ job("Code format check, quality check and publish") {
         host("Publish to DockerHub") {
             // Before running the scripts, the host machine will log in to
             // the registries specified in connections.
-            @Use
             dockerRegistryConnections {
                 // specify connection key
                 +"docker_hub"
