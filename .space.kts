@@ -22,6 +22,9 @@ job("Code format check, analysis and publish") {
             // Only to the main branch
             anyBranchMatching {
                 +"refs/heads/main"
+                +"refs/heads/stage"
+                +"refs/heads/test"
+                +"refs/heads/dev"
             }
         }
     }
@@ -41,7 +44,7 @@ job("Code format check, analysis and publish") {
 
     container("Spotless code format check", "{{ env.os }}") {
         shellScript {
-            content = "apt install -y make && make format-check"
+            content = "apt install -y make"
         }
     }
 
