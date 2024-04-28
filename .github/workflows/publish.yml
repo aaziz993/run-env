@@ -67,6 +67,6 @@ jobs:
           build-args: |
             BASE_IMAGE=${{ env.BASE_IMAGE }}
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags }}, ${{ env.REGISTRY }}/${{ env.IMAGE_TAG }}, ${{ env.REGISTRY }}/latest
           labels: ${{ steps.meta.outputs.labels }}
 
