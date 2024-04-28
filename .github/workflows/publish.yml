@@ -16,6 +16,7 @@ on:
 # Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:
   REGISTRY: ghcr.io
+  BASE_IMAGE: ubuntu:jammy
   IMAGE_NAME: ${{ github.repository }}
   IMAGE_TAG: 1.0.0.${{ github.run_number }}
 # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
@@ -64,7 +65,7 @@ jobs:
         with:
           context: .
           build-args: |
-            BASE_IMAGE=ubuntu:mantic
+            BASE_IMAGE=${{ env.BASE_IMAGE }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}, ${{ env.IMAGE_TAG }}, latest
           labels: ${{ steps.meta.outputs.labels }}, ${{ github.actor }}

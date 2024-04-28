@@ -33,6 +33,7 @@ job("Code format check, quality check and publish") {
     parameters {
         text("branch", "{{ run:trigger.git-push.ref }}")
         text("env.os", "gradle")
+        text("base.image", "ubuntu:jammy")
         text("image.name", "{{ run:trigger.git-push.repository }}")
         text("image.tag", "1.0.0.${"$"}JB_SPACE_EXECUTION_NUMBER")
         text("vendor", "{{ run:project.key }}")
@@ -67,7 +68,7 @@ job("Code format check, quality check and publish") {
             dockerBuildPush {
                 context = "."
                 file = "./Dockerfile"
-                args["BASE_IMAGE"] = "ubuntu:mantic"
+                args["BASE_IMAGE"] = "{{ base.image }}"
                 // image labels
                 labels["vendor"] = "{{ vendor }}"
 
@@ -94,7 +95,7 @@ job("Code format check, quality check and publish") {
             dockerBuildPush {
                 context = "."
                 file = "./Dockerfile"
-                args["BASE_IMAGE"] = "ubuntu:mantic"
+                args["BASE_IMAGE"] = "{{ base.image }}"
                 labels["vendor"] = "{{ vendor }}"
 
                 val dockerHubRepository = "{{ project:dockerhub.username }}/{{ image.name }}"
