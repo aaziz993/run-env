@@ -68,5 +68,5 @@ jobs:
             BASE_IMAGE=${{ env.BASE_IMAGE }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}, ${{ env.IMAGE_TAG }}, latest
-          labels: ${{ steps.meta.outputs.labels }}, ${{ github.actor }}
+          labels: ${{ steps.meta.outputs.labels }}
 

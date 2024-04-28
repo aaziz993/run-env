@@ -182,5 +182,5 @@ RUN echo "############################### Versions #############################
     echo "" && \
     terraform -v && \
     echo "" && \
-    terraspace version && \
+    echo Terraspace "$(terraspace version)" && \
     echo "############################### Versions #####################################"
