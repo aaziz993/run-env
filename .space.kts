@@ -20,9 +20,9 @@ job("Code format check, analysis and publish") {
         gitPush {
             enabled = true
             // Only to the main branch
-//            anyBranchMatching {
-//                +"refs/heads/main"
-//            }
+            anyBranchMatching {
+                +"refs/heads/main"
+            }
         }
     }
 
@@ -42,8 +42,7 @@ job("Code format check, analysis and publish") {
     container("Spotless code format check", "{{ env.os }}") {
         shellScript {
             content = """
-                echo Install Make
-                apt install -y make
+                apt-get install -y make
             """
         }
     }
