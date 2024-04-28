@@ -64,7 +64,7 @@ job("Code format check, quality check and publish") {
 
     parallel {
         host("Publish to Space Packages") {
-
+            env["BASE_IMAGE"] = "ubuntu:mantic"
             dockerBuildPush {
                 context = "."
                 file = "./Dockerfile"
@@ -82,6 +82,7 @@ job("Code format check, quality check and publish") {
         }
 
         host("Publish to DockerHub") {
+            env["BASE_IMAGE"] = "ubuntu:mantic"
             // Before running the scripts, the host machine will log in to
             // the registries specified in connections.
             dockerRegistryConnections {
