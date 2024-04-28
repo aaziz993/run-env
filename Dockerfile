@@ -154,7 +154,7 @@ RUN set -ex -o pipefail && \
     apt install terraform && \
     terraform -v && \
     # Terraspace
-    gem -f install terraspace && \
+    gem install terraspace && \
     terraspace version
 
 # -------------------------------------------------------SUMMARY--------------------------------------------------------
