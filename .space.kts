@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-job("Code format check, analysis and publish") {
+job("Code format check, quality check and publish") {
     startOn {
         // Run on every commit...
         gitPush {
@@ -45,57 +45,63 @@ job("Code format check, analysis and publish") {
                 add-apt-repository ppa:chris-lea/munin-plugins
                 apt update
                 apt install -y make
-            """
+                make format check
+            """.trimIndent()
         }
     }
 
-//    container("Sonar continuous inspection of code quality and security", "{{ env.os }}") {
-//        env["SONAR_TOKEN"] = "{{ project:sonar.token }}"
-//        shellScript {
-//            content = "apt install -y make && make quality-check"
-//        }
-//    }
-//
-//    parallel {
-//        host("Publish to Space Packages") {
-//
-//            dockerBuildPush {
-//                context = "."
-//                file = "./Dockerfile"
-//                // image labels
-//                labels["vendor"] = "{{ vendor }}"
-//
-//                val spaceRepository = "{{ space.repository }}/{{ image.name }}"
-//                // image tags
-//                tags {
-//                    // use current job run number as a tag - '0.0.run_number'
-//                    +"$spaceRepository:{{ image.version }}"
-//                    +"$spaceRepository:latest"
-//                }
-//            }
-//        }
-//
-//        host("Publish to DockerHub") {
-//            // Before running the scripts, the host machine will log in to
-//            // the registries specified in connections.
-//            dockerRegistryConnections {
-//                // specify connection key
-//                +"docker_hub"
-//                // multiple connections are supported
-//                // +"one_more_connection"
-//            }
-//
-//            dockerBuildPush {
-//                context = "."
-//                file = "./Dockerfile"
-//                labels["vendor"] = "{{ vendor }}"
-//
-//                val dockerHubRepository = "{{ project:dockerhub.username }}/{{ image.name }}"
-//                tags {
-//                    +"$dockerHubRepository:{{ image.version }}"
-//                    +"$dockerHubRepository:latest"
-//                }
-//            }
-//        }
-//    }
+    container("Sonar continuous inspection of code quality and security", "{{ env.os }}") {
+        env["SONAR_TOKEN"] = "{{ project:sonar.token }}"
+        shellScript {
+            content = """
+                add-apt-repository ppa:chris-lea/munin-plugins
+                apt update
+                apt install -y make
+                make quality-check
+            """.trimIndent()
+        }
+    }
+
+    parallel {
+        host("Publish to Space Packages") {
+
+            dockerBuildPush {
+                context = "."
+                file = "./Dockerfile"
+                // image labels
+                labels["vendor"] = "{{ vendor }}"
+
+                val spaceRepository = "{{ space.repository }}/{{ image.name }}"
+                // image tags
+                tags {
+                    // use current job run number as a tag - '0.0.run_number'
+                    +"$spaceRepository:{{ image.version }}"
+                    +"$spaceRepository:latest"
+                }
+            }
+        }
+
+        host("Publish to DockerHub") {
+            // Before running the scripts, the host machine will log in to
+            // the registries specified in connections.
+            dockerRegistryConnections {
+                // specify connection key
+                +"docker_hub"
+                // multiple connections are supported
+                // +"one_more_connection"
+            }
+
+            dockerBuildPush {
+                context = "."
+                file = "./Dockerfile"
+                labels["vendor"] = "{{ vendor }}"
+
+                val dockerHubRepository = "{{ project:dockerhub.username }}/{{ image.name }}"
+                tags {
+                    +"$dockerHubRepository:{{ image.version }}"
+                    +"$dockerHubRepository:latest"
+                }
+            }
+        }
+    }
 }
