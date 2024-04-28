@@ -34,7 +34,7 @@ job("Code format check, quality check and publish") {
         text("branch", "{{ run:trigger.git-push.ref }}")
         text("env.os", "gradle")
         text("image.name", "{{ run:trigger.git-push.repository }}")
-        text("image.version", "1.0.0.${"$"}JB_SPACE_EXECUTION_NUMBER")
+        text("image.tag", "1.0.0.${"$"}JB_SPACE_EXECUTION_NUMBER")
         text("vendor", "{{ run:project.key }}")
         text("space.repository", "aaziz93.registry.jetbrains.space/p/aaziz-93/containers")
     }
@@ -64,10 +64,10 @@ job("Code format check, quality check and publish") {
 
     parallel {
         host("Publish to Space Packages") {
-            env["BASE_IMAGE"] = "ubuntu:mantic"
             dockerBuildPush {
                 context = "."
                 file = "./Dockerfile"
+                args["BASE_IMAGE"] = "ubuntu:mantic"
                 // image labels
                 labels["vendor"] = "{{ vendor }}"
 
@@ -75,14 +75,13 @@ job("Code format check, quality check and publish") {
                 // image tags
                 tags {
                     // use current job run number as a tag - '0.0.run_number'
-                    +"$spaceRepository:{{ image.version }}"
+                    +"$spaceRepository:{{ image.tag }}"
                     +"$spaceRepository:latest"
                 }
             }
         }
 
         host("Publish to DockerHub") {
-            env["BASE_IMAGE"] = "ubuntu:mantic"
             // Before running the scripts, the host machine will log in to
             // the registries specified in connections.
             dockerRegistryConnections {
@@ -95,11 +94,12 @@ job("Code format check, quality check and publish") {
             dockerBuildPush {
                 context = "."
                 file = "./Dockerfile"
+                args["BASE_IMAGE"] = "ubuntu:mantic"
                 labels["vendor"] = "{{ vendor }}"
 
                 val dockerHubRepository = "{{ project:dockerhub.username }}/{{ image.name }}"
                 tags {
-                    +"$dockerHubRepository:{{ image.version }}"
+                    +"$dockerHubRepository:{{ image.tag }}"
                     +"$dockerHubRepository:latest"
                 }
             }

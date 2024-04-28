@@ -64,7 +64,7 @@ ENV HASHICORP_URL="https://apt.releases.hashicorp.com"
 ENV HASHICORP_GPG_KEY_URL="$HASHICORP_URL/gpg"
 
 # --------------------------------------------INSTALL BASE PACKAGES-----------------------------------------------------
-RUN apt-get update && apt-get install -y apt-utils apt-transport-https software-properties-common && \
+RUN apt update && apt install -y apt-utils apt-transport-https software-properties-common && \
     apt-add-repository ppa:git-core/ppa -y &&  \
     apt-add-repository ppa:openjdk-r/ppa -y &&  \
     apt update && apt install -y \
