@@ -22,9 +22,6 @@ job("Code format check, analysis and publish") {
             // Only to the main branch
             anyBranchMatching {
                 +"refs/heads/main"
-                +"refs/heads/stage"
-                +"refs/heads/test"
-                +"refs/heads/dev"
             }
         }
     }
