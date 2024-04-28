@@ -1,4 +1,5 @@
-FROM ubuntu:24.04
+ARG BASE_IMAGE=ubuntu:latest
+FROM $BASE_IMAGE
 
 ENV LANG=C.UTF-8
 
