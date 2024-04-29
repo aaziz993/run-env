@@ -94,10 +94,10 @@ jobs:
         with:
           context: .
           build-args: |
-            BASE_IMAGE=${{ steps.gradle-properties.outputs.image.base.image }}
-            DEVELOPER_NAME=${{ steps.gradle-properties.outputs.developer.name }}
-            DEVELOPER_EMAIL=${{ steps.gradle-properties.outputs.developer.email }}
+            BASE_IMAGE=${{ steps.gradle-properties.outputs['image.base.image'] }}
+            DEVELOPER_NAME=${{ steps.gradle-properties.outputs['developer.name'] }}
+            DEVELOPER_EMAIL=${{ steps.gradle-properties.outputs['developer.email'] }}
           push: true
-          tags: ${{ steps.meta.outputs.tags }}, ${{ env.REGISTRY }}/${{ steps.gradle-properties.outputs.image.name }}:${{ steps.image-tag.outputs.image.tag }}, ${{ env.REGISTRY }}/${{ steps.gradle-properties.outputs.image.name }}:latest
+          tags: ${{ steps.meta.outputs.tags }}, ${{ env.REGISTRY }}/${{ steps.gradle-properties.outputs['image.name'] }}:${{ steps.image-tag.outputs['image.tag'] }}, ${{ env.REGISTRY }}/${{ steps.gradle-properties.outputs['image.name'] }}:latest
           labels: ${{ steps.meta.outputs.labels }}
 
