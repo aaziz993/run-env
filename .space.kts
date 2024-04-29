@@ -49,7 +49,7 @@ job("Code format check, quality check and publish") {
                     api.parameters[it.key.toString()] = it.value.toString()
                 }
             }
-            println("FILE EXISTS=" + File("${'$'}JB_SPACE_WORK_DIR_PATH/gradle.properties"))
+            println("FILE EXISTS=" + File("${'$'}JB_SPACE_WORK_DIR_PATH/gradle.properties").exists())
             val imageVersion = api.parameters["image.version"]!!
             val imageVersionSnapshotSuffix = api.parameters["image.version.snapshot.suffix"]!!
 
