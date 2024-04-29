@@ -36,19 +36,19 @@ jobs:
 
       - name: Read gradle.properties
         uses: BrycensRanch/read-properties-action@v1.0.3
-        id: gradle.properties
+        id: gradle_properties
         with:
           file: gradle.properties
           all: true
 
       - id: image.tag
         run: |
-          image_version=${{ steps.gradle.properties.outputs.image.version }}
+          image_version=${{ steps.gradle_properties.outputs.image.version }}
 
-          image_version_snapshot_suffix=${{ steps.gradle.properties.outputs.image.version.snapshot.suffix }}
+          image_version_snapshot_suffix=${{ steps.gradle_properties.outputs.image.version.snapshot.suffix }}
 
           image_version_suffix="$(
-          [ "${{ steps.gradle.properties.outputs.github.actions.versioning.run.number }}" == "true" ] &&
+          [ "${{ steps.gradle_properties.outputs.github.actions.versioning.run.number }}" == "true" ] &&
             echo ".${{ github.run_number }}"
             echo
           )
@@ -89,10 +89,10 @@ jobs:
         with:
           context: .
           build-args: |
-            BASE_IMAGE=${{ steps.gradle.properties.outputs.image.base.image }}
-            DEVELOPER_NAME=${{ steps.gradle.properties.outputs.developer.name }}
-            DEVELOPER_EMAIL=${{ steps.gradle.properties.outputs.developer.email }}
+            BASE_IMAGE=${{ steps.gradle_properties.outputs.image.base.image }}
+            DEVELOPER_NAME=${{ steps.gradle_properties.outputs.developer.name }}
+            DEVELOPER_EMAIL=${{ steps.gradle_properties.outputs.developer.email }}
           push: true
-          tags: ${{ steps.meta.outputs.tags }}, ${{ env.REGISTRY }}/${{ steps.gradle.properties.outputs.image.name }}:${{ steps.gradle.properties.outputs.image.tag }}, ${{ env.REGISTRY }}/${{ steps.gradle.properties.outputs.image.name }}:latest
+          tags: ${{ steps.meta.outputs.tags }}, ${{ env.REGISTRY }}/${{ steps.gradle_properties.outputs.image.name }}:${{ steps.gradle_properties.outputs.image.tag }}, ${{ env.REGISTRY }}/${{ steps.gradle_properties.outputs.image.name }}:latest
           labels: ${{ steps.meta.outputs.labels }}
 
