@@ -40,7 +40,7 @@ job("Code format check, quality check and publish") {
         kotlinScript { api ->
             // Do not use workDir to get the path to the working directory in a shellScript or kotlinScript.
             // Instead, use the JB_SPACE_WORK_DIR_PATH environment variable.
-            File("${'$'}JB_SPACE_WORK_DIR_PATH/gradle.properties").let { file ->
+            File("${System.getenv("JB_SPACE_WORK_DIR_PATH")}/gradle.properties").let { file ->
                 Properties().apply {
                     if (file.exists()) {
                         load(file.reader())
@@ -49,7 +49,7 @@ job("Code format check, quality check and publish") {
                     api.parameters[it.key.toString()] = it.value.toString()
                 }
             }
-            println("FILE ${'$'}JB_SPACE_WORK_DIR_PATH/gradle.properties")
+
             val imageVersion = api.parameters["image.version"]!!
             val imageVersionSnapshotSuffix = api.parameters["image.version.snapshot.suffix"]!!
 
