@@ -40,7 +40,8 @@ jobs:
         with:
           file: gradle.properties
           all: true
-      - run: echo ${{ steps.gradle-properties.outputs.image.name }}
+
+      - run: echo ${{ steps.gradle-properties.image.name }}
 
       - id: image-tag
         run: |
