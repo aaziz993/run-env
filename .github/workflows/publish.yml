@@ -41,7 +41,7 @@ jobs:
           file: gradle.properties
           all: true
 
-      - run: echo ${{ env.GITHUB_OUTPUT }}
+      - run: echo ${{ toJson(steps.gradle-properties.outputs) }}
 
       - id: image-tag
         run: |
