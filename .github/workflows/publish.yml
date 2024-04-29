@@ -52,7 +52,8 @@ jobs:
           GITHUB_ACTIONS_VERSIONING_RUN_NUMBER: ${{ steps.gradle-properties.outputs.github.actions.versioning.run.number }}
         run: |
           echo "$IMAGE_VERSION"
-          echo ${{ steps.gradle-properties.outputs['"image.version"'] }}
+          echo ${{ steps.gradle-properties.outputs['image.version'] }}
+          echo ${{ steps.gradle-properties.outputs['\"image.version\"'] }}
 
       #      - name: Spotless code format check
       #        run: make format-check
