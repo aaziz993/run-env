@@ -46,6 +46,7 @@ job("Code format check, quality check and publish") {
                         load(file.reader())
                     }
                 }.entries.forEach {
+                    println("${it.key}=${it.value}")
                     api.parameters[it.key.toString()] = it.value.toString()
                 }
             }
