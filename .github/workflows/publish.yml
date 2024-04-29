@@ -62,6 +62,7 @@ jobs:
             echo "$image_version$image_version_suffix$image_version_snapshot_suffix" ||
             echo "$image_version$image_version_suffix"
           )"
+
           echo "image.tag=$image_tag" >> "$GITHUB_OUTPUT"
 
 #      - name: Spotless code format check
@@ -97,6 +98,6 @@ jobs:
             DEVELOPER_NAME=${{ steps.gradle-properties.outputs['developer.name'] }}
             DEVELOPER_EMAIL=${{ steps.gradle-properties.outputs['developer.email'] }}
           push: true
-          tags: ${{ steps.meta.outputs.tags }}, ${{ env.REGISTRY }}/${{ steps.gradle-properties.outputs['image.name'] }}:${{ steps.image-tag.outputs['image.tag'] }}, ${{ env.REGISTRY }}/${{ steps.gradle-properties.outputs['image.name'] }}:latest
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
