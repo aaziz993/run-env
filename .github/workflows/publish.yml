@@ -41,11 +41,11 @@ jobs:
           file: gradle.properties
           all: true
 
-      - run: echo ${{ steps.gradle-properties.image.name }}
+      - run: echo ${{ steps.gradle-properties.outputs.image.name }}
 
       - id: image-tag
         run: |
-          image_version=${{ steps.gradle-properties.outputs.image.version }}
+          image_version=${{ steps.gradle-properties.outputs.test }}
 
           image_version_snapshot_suffix=${{ steps.gradle-properties.outputs.image.version.snapshot.suffix }}
 
