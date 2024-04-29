@@ -63,7 +63,7 @@ else {
     providers.gradleProperty("dockerhub.username").get()
 }
 
-val projectVersion = providers.gradleProperty("project.version").get()
+val projectVersion = providers.gradleProperty("image.version").get()
 
 val projectVersionSnapshotSuffix: String = providers.gradleProperty("image.version.snapshot.suffix").get()
 
