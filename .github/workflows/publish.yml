@@ -51,6 +51,8 @@ jobs:
 
           image_version_snapshot_suffix="${{ steps.gradle-properties.outputs['image.version.snapshot.suffix'] }}"
 
+          image_version_suffix="$( [ "${{ steps.gradle-properties.outputs['github.actions.versioning.run.number'] }}" == "true" ] && echo ".${{ github.run_number }}" echo )
+
       #      - name: Spotless code format check
       #        run: make format-check
       #
