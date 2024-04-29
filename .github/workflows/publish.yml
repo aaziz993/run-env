@@ -38,7 +38,7 @@ jobs:
           distribution: 'temurin'
           java-version: 17
 
-      - name: Read gradle.properties
+      - name: 👀 Read gradle.properties
         uses: BrycensRanch/read-properties-action@v1.0.3
         id: gradle-properties
         with:
@@ -80,9 +80,8 @@ jobs:
       - name: 🐳 Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.3.0
 
-      # Setup cache
-      - name: ⚡️ Cache Docker layers
-        uses: actions/cache@v4.0.2
+      # ⚡️ Setup cache. Cache Docker layers
+      - uses: actions/cache@v4.0.2
         with:
           path: /tmp/.buildx-cache
           key: "${{ runner.os }}-buildx-${{ github.sha }}"
