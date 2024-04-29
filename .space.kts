@@ -28,7 +28,7 @@ job("Code format check, quality check and publish") {
         }
     }
 
-    container("Read gradle.properties", "{{ env.os }}") {
+    container("Read gradle.properties", "gradle") {
         kotlinScript { api ->
             // Do not use workDir to get the path to the working directory in a shellScript or kotlinScript.
             // Instead, use the JB_SPACE_WORK_DIR_PATH environment variable.
