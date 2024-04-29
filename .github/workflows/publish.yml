@@ -51,18 +51,8 @@ jobs:
           IMAGE_VERSION_SNAPSHOT_SUFFIX: ${{ steps.gradle-properties.outputs.image.version.snapshot.suffix }}
           GITHUB_ACTIONS_VERSIONING_RUN_NUMBER: ${{ steps.gradle-properties.outputs.github.actions.versioning.run.number }}
         run: |
-          image_version_suffix="$(
-            [ "$GITHUB_ACTIONS_VERSIONING_RUN_NUMBER" == "true" ] &&
-            echo ".${{ github.run_number }}"
-            echo
-          )
-
-          image_tag="$(
-            [ "$IMAGE_VERSION" == *"$IMAGE_VERSION_SNAPSHOT_SUFFIX" ] &&
-            echo "$IMAGE_VERSION$IMAGE_VERSION_SUFFIX$IMAGE_VERSION_SNAPSHOT_SUFFIX" ||
-            echo "$IMAGE_VERSION$IMAGE_VERSION_SUFFIX"
-          )"
-          echo "image.tag=$image_tag" >> "$GITHUB_OUTPUT"
+          echo "$IMAGE_VERSION"
+          echo ${{ steps.gradle-properties.outputs['"image.version"'] }}
 
       #      - name: Spotless code format check
       #        run: make format-check
