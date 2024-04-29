@@ -63,12 +63,38 @@ else {
     providers.gradleProperty("dockerhub.username").get()
 }
 
-val versionSplit = providers.gradleProperty("project.version").get().split("-", limit = 2)
-val versionSuffix = if (versionSplit.size > 1) "-${versionSplit[1]}" else ""
+val projectVersion = providers.gradleProperty("project.version").get()
+
+val projectVersionSnapshotSuffix: String = providers.gradleProperty("image.version.snapshot.suffix").get()
 
 allprojects {
-    group = providers.gradleProperty("project.group").get()
-    version = versionSplit[0]
+    group = providers.gradleProperty("image.group").get()
+
+    val versionSuffix = "${
+        if (System.getenv().containsKey("GITHUB_RUN_NUMBER")) {
+            // The GITHUB_RUN_NUMBER A unique number for each run of a particular workflow in a repository.
+            // This number begins at 1 for the workflow's first run, and increments with each new run.
+            // This number does not change if you re-run the workflow run.
+            ".${System.getenv("GITHUB_RUN_NUMBER")}"
+        }
+        else {
+            ""
+        }
+    }${
+        if (System.getenv().containsKey("JB_SPACE_EXECUTION_NUMBER")) {
+            ".${System.getenv("JB_SPACE_EXECUTION_NUMBER")}"
+        }
+        else {
+            ""
+        }
+    }"
+
+    version = if (projectVersion.endsWith(projectVersionSnapshotSuffix)) {
+        "${projectVersion.removeSuffix(projectVersionSnapshotSuffix)}$versionSuffix$projectVersionSnapshotSuffix"
+    }
+    else {
+        "$projectVersion$versionSuffix"
+    }
 }
 
 spotless {
@@ -152,24 +178,26 @@ sonarqube {
     }
 }
 
+
+println("Ihaveastring".substringAfterLast("_", ""))
+
 docker {
-    url = if (System.getenv().containsKey("DOCKER_URL")) {
-        System.getenv("DOCKER_URL")
+    url = providers.gradleProperty("docker.url").getOrElse(
+        if (os.isWindows) {
+            "tcp://127.0.0.1:2375"
+        }
+        else {
+            "unix:///var/run/docker.sock"
+        },
+    )
+    if (System.getenv().containsKey("DOCKER_CERT_PATH")) {
+        certPath.set(File(System.getenv("DOCKER_CERT_PATH")))
     }
     else {
-        providers.gradleProperty("docker.url").getOrElse(
-            if (os.isWindows) {
-                providers.gradleProperty("docker.windows.url")
-                    .getOrElse("tcp://127.0.0.1:2375")
-            }
-            else {
-                providers.gradleProperty("docker.unix.url").getOrElse(
-                    "unix:///var/run/docker.sock",
-                )
-            },
-        )
+        providers.gradleProperty("docker.cert.path").orNull?.let {
+            certPath.set(File(it))
+        }
     }
-    certPath.set(File(System.getProperty("user.home"), "/.docker"))
     registryCredentials {
         url = providers.gradleProperty("dockerhub.url")
         username = dockerhubUsername
@@ -192,16 +220,15 @@ tasks.create("buildDockerImage", DockerBuildImage::class) {
     doNotTrackState("")
     inputDir = layout.buildDirectory
     buildArgs = mapOf(
-        "BASE_IMAGE" to providers.gradleProperty("base.image").get(),
+        "BASE_IMAGE" to providers.gradleProperty("image.base.image").get(),
+        "DEVELOPER_NAME" to providers.gradleProperty("developer.name").get(),
+        "DEVELOPER_EMAIL" to providers.gradleProperty("developer.email").get(),
     )
-    images.add("$dockerhubUsername/${rootProject.name}:$version$versionSuffix")
+    images.add("$dockerhubUsername/${rootProject.name}:$version")
     images.add("$dockerhubUsername/${rootProject.name}:latest")
     if (System.getenv().containsKey("GITHUB_REF_NAME")) {
-        // The GITHUB_REF_NAME provide the release name.
-        images.add("$dockerhubUsername/${rootProject.name}:$version.${System.getenv("GITHUB_REF_NAME")}$versionSuffix")
-    }
-    if (System.getenv().containsKey("JB_SPACE_EXECUTION_NUMBER")) {
-        images.add("$dockerhubUsername/${rootProject.name}:$version.${System.getenv("JB_SPACE_EXECUTION_NUMBER")}$versionSuffix")
+        // The GITHUB_REF_NAME provide the reference name.
+        images.add("$dockerhubUsername/${rootProject.name}:${System.getenv("GITHUB_REF_NAME")}")
     }
     dependsOn("copyDockerfile")
 }

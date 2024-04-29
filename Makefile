@@ -15,7 +15,7 @@ quality-check: # Check code quality with sonar
 build: # Build docker image
 	chmod 777 -R scripts/ && ./scripts/build.sh
 
-publish: # Publish docker image
+publish-dockerhub: # Publish docker image to DockerHub
 	chmod 777 -R scripts/ && ./scripts/publish.sh
 
 create: # Create docker image

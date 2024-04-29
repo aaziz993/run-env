@@ -35,4 +35,4 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = providers.gradleProperty("project.name").get()
+rootProject.name = providers.gradleProperty("image.name").get()

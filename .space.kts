@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import java.io.File
+import java.util.*
 
 job("Code format check, quality check and publish") {
     startOn {
@@ -31,13 +33,45 @@ job("Code format check, quality check and publish") {
     // Users will be able to redefine these parameters in custom job run.
     // See the 'Customize job run' section
     parameters {
-        text("branch", "{{ run:trigger.git-push.ref }}")
         text("env.os", "gradle")
-        text("base.image", "ubuntu:jammy")
-        text("image.name", "{{ run:trigger.git-push.repository }}")
-        text("image.tag", "1.0.0.${"$"}JB_SPACE_EXECUTION_NUMBER")
-        text("vendor", "{{ run:project.key }}")
-        text("space.repository", "aaziz93.registry.jetbrains.space/p/aaziz-93/containers")
+    }
+
+    container("Read gradle.properties", "{{ env.os }}") {
+        kotlinScript { api ->
+            // Do not use workDir to get the path to the working directory in a shellScript or kotlinScript.
+            // Instead, use the JB_SPACE_WORK_DIR_PATH environment variable.
+            File("${'$'}JB_SPACE_WORK_DIR_PATH/gradle.properties").let { file ->
+                Properties().apply {
+                    if (file.exists()) {
+                        load(file.reader())
+                    }
+                }.entries.forEach {
+                    api.parameters[it.key.toString()] = it.value.toString()
+                }
+            }
+
+            val imageVersion = api.parameters["image.version"]!!
+            val imageVersionSnapshotSuffix = api.parameters["image.version.snapshot.suffix"]!!
+
+            // Define image.tag depend on jetbrains.space.automation.versioning.run.number is true or false
+            // by adding JB_SPACE_EXECUTION_NUMBER
+            val imageVersionSuffix = if (api.parameters["jetbrains.space.automation.versioning.run.number"].toBoolean()) {
+                ".${api.executionNumber()}"
+            }
+            else {
+                ""
+            }
+
+            // Define jetbrains.space.packages.url depend on snapshot suffix in image.tag
+            api.parameters["image.tag"] = if (imageVersion.endsWith(imageVersionSnapshotSuffix)) {
+                api.parameters["jetbrains.space.packages.url"] = api.parameters["jetbrains.space.packages.snapshots.url"]!!
+                "${imageVersion.removeSuffix(imageVersionSnapshotSuffix)}$imageVersionSuffix$imageVersionSnapshotSuffix"
+            }
+            else {
+                api.parameters["jetbrains.space.packages.url"] = api.parameters["jetbrains.space.packages.releases.url"]!!
+                "$imageVersion$imageVersionSuffix"
+            }
+        }
     }
 
     container("Spotless code format check", "{{ env.os }}") {
@@ -67,17 +101,23 @@ job("Code format check, quality check and publish") {
         host("Publish to Space Packages") {
             dockerBuildPush {
                 context = "."
-                file = "./Dockerfile"
-                args["BASE_IMAGE"] = "{{ base.image }}"
-                // image labels
-                labels["vendor"] = "{{ vendor }}"
 
-                val spaceRepository = "{{ space.repository }}/{{ image.name }}"
+                file = "./Dockerfile"
+
+                // Arguments passed to Dockerfile
+                args["BASE_IMAGE"] = "{{ image.base.image }}"
+                args["DEVELOPER_NAME"] = "{{ developer.name }}"
+                args["DEVELOPER_EMAIL"] = "{{ developer.email }}"
+
+                // image labels
+                labels["vendor"] = "{{ developer.name }}"
+
+                val spacePackagesUrl = "{{ jetbrains.space.packages.url }}/{{ image.name }}"
+
                 // image tags
                 tags {
-                    // use current job run number as a tag - '0.0.run_number'
-                    +"$spaceRepository:{{ image.tag }}"
-                    +"$spaceRepository:latest"
+                    +"$spacePackagesUrl:{{ image.tag }}"
+                    +"$spacePackagesUrl:latest"
                 }
             }
         }
@@ -94,11 +134,18 @@ job("Code format check, quality check and publish") {
 
             dockerBuildPush {
                 context = "."
-                file = "./Dockerfile"
-                args["BASE_IMAGE"] = "{{ base.image }}"
-                labels["vendor"] = "{{ vendor }}"
 
-                val dockerHubRepository = "{{ project:dockerhub.username }}/{{ image.name }}"
+                file = "./Dockerfile"
+
+                // Arguments passed to Dockerfile
+                args["BASE_IMAGE"] = "{{ image.base.image }}"
+                args["DEVELOPER_NAME"] = "{{ developer.name }}"
+                args["DEVELOPER_EMAIL"] = "{{ developer.email }}"
+
+                // image labels
+                labels["vendor"] = "{{ developer.name }}"
+
+                val dockerHubRepository = "{{ dockerhub.username }}/{{ image.name }}"
                 tags {
                     +"$dockerHubRepository:{{ image.tag }}"
                     +"$dockerHubRepository:latest"
