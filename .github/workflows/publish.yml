@@ -41,11 +41,11 @@ jobs:
           file: gradle.properties
           all: true
 
-      - run: echo ${{ toJson(steps.gradle-properties.outputs) }}
+      - run: echo "${{ toJson(steps.gradle-properties.outputs) }}"
 
       - id: image-tag
         run: |
-          image_version=${{ steps.gradle-properties.outputs.test_v }}
+          image_version=${{ steps.gradle-properties.outputs.test.v }}
 
           image_version_snapshot_suffix=${{ steps.gradle-properties.outputs.image.version.snapshot.suffix }}
 
