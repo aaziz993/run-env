@@ -53,7 +53,7 @@ jobs:
         run: |
           echo "$IMAGE_VERSION"
           echo ${{ steps.gradle-properties.outputs['image.version'] }}
-          echo ${{ steps.gradle-properties.outputs['\"image.version\"'] }}
+          echo ${{ steps.gradle-properties.outputs.image.version }}
 
       #      - name: Spotless code format check
       #        run: make format-check
