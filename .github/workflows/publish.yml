@@ -46,14 +46,23 @@ jobs:
         run: echo "$GRADLE_PROPERTIES"
 
       - id: image-tag
-        env:
-          IMAGE_VERSION: ${{ steps.gradle-properties.outputs.image.version }}
-          IMAGE_VERSION_SNAPSHOT_SUFFIX: ${{ steps.gradle-properties.outputs.image.version.snapshot.suffix }}
-          GITHUB_ACTIONS_VERSIONING_RUN_NUMBER: ${{ steps.gradle-properties.outputs.github.actions.versioning.run.number }}
         run: |
-          echo "$IMAGE_VERSION"
-          echo ${{ steps.gradle-properties.outputs['image.version'] }}
-          echo ${{ steps.gradle-properties.outputs.image.version }}
+          image_version=${{ steps.gradle-properties.outputs['image.version'] }}
+
+          image_version_snapshot_suffix=${{ steps.gradle-properties.outputs['image.version.snapshot.suffix'] }}
+
+          image_version_suffix="$(
+            [ "${{ steps.gradle-properties.outputs['github.actions.versioning.run.number'] }}" == "true" ] &&
+            echo ".${{ github.run_number }}"
+            echo
+          )
+
+          image_tag="$(
+            [ "$image_version" == *"$image_version_snapshot_suffix" ] &&
+            echo "$image_version$image_version_suffix$image_version_snapshot_suffix" ||
+            echo "$image_version$image_version_suffix"
+          )"
+          echo "::set-output image.tag=fragment::$image_tag"
 
       #      - name: Spotless code format check
       #        run: make format-check
