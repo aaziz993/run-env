@@ -21,20 +21,20 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 
 # --------------------------------------------ENVIRONMENT VARIABLES-----------------------------------------------------
 ## JDK
-ENV JDK_VERSION=17
+ENV JDK_VERSION="17"
 
 ## GRADLE
-ENV GRADLE_VERSION=8.7 \
+ENV GRADLE_VERSION="8.7" \
     GRADLE_ROOT="/usr/local/gradle"
 ENV GRADLE_URL="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
     GRADLE_FILE="gradle-$GRADLE_VERSION"
 ENV PATH="$GRADLE_ROOT/$GRADLE_FILE/bin:$PATH"
 
 ## ANDROID
-ENV TOOLS_REVISION="11076708"
-ENV ANDROID_SDK_VERSION=33 \
-    ANDROID_BUILD_TOOLS_VERSION=33.0.1 \
-    TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-${TOOLS_REVISION}_latest.zip" \
+ENV ANDROID_BUILD_TOOLS_REVISION="11076708"
+ENV ANDROID_SDK_VERSION="33" \
+    ANDROID_BUILD_TOOLS_VERSION="33.0.1" \
+    ANDROID_BUILD_TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_BUILD_TOOLS_REVISION}_latest.zip" \
     ANDROID_SDK_ROOT="/usr/local/android-sdk"
 ENV ANDROID_SDK_FILE="android-sdk-$ANDROID_SDK_VERSION.zip" \
     PATH="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/cmdline-tools/tools/bin:$PATH"
@@ -88,7 +88,7 @@ RUN mkdir -p "$GRADLE_ROOT" &&  \
 # ----------------------------------------------DOWNLOAD ANDROID SDK----------------------------------------------------
 RUN mkdir -p "$ANDROID_SDK_ROOT" .android "$ANDROID_SDK_ROOT/cmdline-tools" && \
     cd "$ANDROID_SDK_ROOT/cmdline-tools" && \
-    curl -fsSL "$TOOLS_URL" -o "$ANDROID_SDK_FILE"  && \
+    curl -fsSL "$ANDROID_BUILD_TOOLS_URL" -o "$ANDROID_SDK_FILE"  && \
     unzip "$ANDROID_SDK_FILE" && \
     rm "$ANDROID_SDK_FILE" && \
     mv cmdline-tools tools && \
