@@ -47,23 +47,21 @@ jobs:
 
       - id: image-tag
         run: |
-          image_version='\"'${{ steps.gradle-properties.outputs['image.version'] }}'\"'
+          `image_version="${{ steps.gradle-properties.outputs['image.version'] }}"
 
-          image_version_snapshot_suffix='\"'${{ steps.gradle-properties.outputs['image.version.snapshot.suffix'] }}'\"'
+          image_version_snapshot_suffix="${{ steps.gradle-properties.outputs['image.version.snapshot.suffix'] }}"
 
-          image_version_suffix='\"'$(
-            [ '\"'${{ steps.gradle-properties.outputs['github.actions.versioning.run.number'] }}'\"' == '\"'true'\"' ] &&
-            echo '\"'.${{ github.run_number }}'\"'
+          image_version_suffix="$(
+            [ "${{ steps.gradle-properties.outputs['github.actions.versioning.run.number'] }}" == "true" ] &&
+            echo ".${{ github.run_number }}"
             echo
           )
 
-          image_tag='\"'$(
-            [ '\"'$image_version'\"' == *'\"'$image_version_snapshot_suffix'\"' ] &&
-            echo '\"'$image_version$image_version_suffix$image_version_snapshot_suffix'\"' ||
-            echo '\"'$image_version$image_version_suffix'\"'
-          )'\"'
-          echo '\"'$image_tag'\"'
-          echo '\"'image.tag=$image_tag'\"' >> '\"'$GITHUB_OUTPUT'\"'
+          image_tag="$(
+            [ "$image_version" == *"$image_version_snapshot_suffix" ] &&
+            echo "$image_version$image_version_suffix$image_version_snapshot_suffix" ||
+            echo "$image_version$image_version_suffix"
+          )"`
 
       #      - name: Spotless code format check
       #        run: make format-check
