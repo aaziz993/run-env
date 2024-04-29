@@ -41,7 +41,7 @@ jobs:
           file: gradle.properties
           all: true
 
-      - id: image.tag
+      - id: image_tag
         run: |
           image_version=${{ steps.gradle_properties.outputs.image.version }}
 
@@ -93,6 +93,6 @@ jobs:
             DEVELOPER_NAME=${{ steps.gradle_properties.outputs.developer.name }}
             DEVELOPER_EMAIL=${{ steps.gradle_properties.outputs.developer.email }}
           push: true
-          tags: ${{ steps.meta.outputs.tags }}, ${{ env.REGISTRY }}/${{ steps.gradle_properties.outputs.image.name }}:${{ steps.gradle_properties.outputs.image.tag }}, ${{ env.REGISTRY }}/${{ steps.gradle_properties.outputs.image.name }}:latest
+          tags: ${{ steps.meta.outputs.tags }}, ${{ env.REGISTRY }}/${{ steps.gradle_properties.outputs.image.name }}:${{ steps.image_tag.outputs.image.tag }}, ${{ env.REGISTRY }}/${{ steps.gradle_properties.outputs.image.name }}:latest
           labels: ${{ steps.meta.outputs.labels }}
 
