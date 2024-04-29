@@ -99,7 +99,5 @@ jobs:
             DEVELOPER_EMAIL=${{ steps.gradle-properties.outputs['developer.email'] }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}, ${{ env.REGISTRY }}/${{ steps.gradle-properties.outputs['image.name'] }}:${{ steps.image-tag.outputs['image.tag'] }}, ${{ env.REGISTRY }}/${{ steps.gradle-properties.outputs['image.name'] }}:latest
-          labels: |
-            ${{ steps.meta.outputs.labels }}
-            org.opencontainers.image.vendor=${{ env.DEVELOPER_NAME }}
+          labels: ${{ steps.meta.outputs.labels }}
 
