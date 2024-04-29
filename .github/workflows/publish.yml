@@ -62,7 +62,7 @@ jobs:
             echo "$IMAGE_VERSION$IMAGE_VERSION_SUFFIX$IMAGE_VERSION_SNAPSHOT_SUFFIX" ||
             echo "$IMAGE_VERSION$IMAGE_VERSION_SUFFIX"
           )"
-          echo "::set-output image.tag=fragment::$image_tag"
+          echo "image.tag=$image_tag" >> "$GITHUB_OUTPUT"
 
       #      - name: Spotless code format check
       #        run: make format-check
