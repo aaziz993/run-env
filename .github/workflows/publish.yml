@@ -45,7 +45,7 @@ jobs:
 
       - id: image-tag
         run: |
-          image_version=${{ steps.gradle-properties.outputs.test }}
+          image_version=${{ steps.gradle-properties.outputs.test.v }}
 
           image_version_snapshot_suffix=${{ steps.gradle-properties.outputs.image.version.snapshot.suffix }}
 
