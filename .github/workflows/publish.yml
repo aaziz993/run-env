@@ -41,7 +41,7 @@ jobs:
           file: gradle.properties
           all: true
 
-      - run: echo ${{ steps.gradle-properties.outputs.test-v }}
+      - run: echo ${{ env.GITHUB_OUTPUT }}
 
       - id: image-tag
         run: |
