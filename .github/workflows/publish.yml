@@ -62,7 +62,6 @@ jobs:
             echo "$image_version$image_version_suffix$image_version_snapshot_suffix" ||
             echo "$image_version$image_version_suffix"
           )"
-
           echo "image.tag=$image_tag" >> "$GITHUB_OUTPUT"
 
 #      - name: Spotless code format check
