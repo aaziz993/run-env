@@ -63,7 +63,7 @@ jobs:
             echo "$image_version$image_version_suffix"
           )"
           echo "$image_tag"
-          echo "image.tag=$image_tag" >> "$GITHUB_OUTPUT"
+          echo `"image.tag=$image_tag" >> "$GITHUB_OUTPUT"`
 
       #      - name: Spotless code format check
       #        run: make format-check
