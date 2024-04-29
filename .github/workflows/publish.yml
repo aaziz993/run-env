@@ -47,9 +47,9 @@ jobs:
 
       - id: image-tag
         run: |
-          image_version=${{ steps.gradle-properties.outputs['image.version'] }}
+          image_version="${{ steps.gradle-properties.outputs['image.version'] }}"
 
-          image_version_snapshot_suffix=${{ steps.gradle-properties.outputs['image.version.snapshot.suffix'] }}
+          image_version_snapshot_suffix="${{ steps.gradle-properties.outputs['image.version.snapshot.suffix'] }}"
 
           image_version_suffix="$(
             [ "${{ steps.gradle-properties.outputs['github.actions.versioning.run.number'] }}" == "true" ] &&
