@@ -70,6 +70,8 @@ jobs:
             echo "$image_version$image_version_suffix"
           )"
 
+          echo ${{ github.repository }}
+
           echo "image.tag=$image_tag" >> "$GITHUB_OUTPUT"
 
       #      - name: 🔬 Spotless code format check
