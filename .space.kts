@@ -28,6 +28,14 @@ job("Code format check, quality check and publish") {
         }
     }
 
+    // To get a parameter in a job, specify its name in a string inside double curly braces: "{{ my-param }}".
+    // You can do this in any string inside any DSL block excluding startOn, git, and kotlinScript.
+    // Users will be able to redefine these parameters in custom job run.
+    // See the 'Customize job run' section
+    parameters {
+        text("image", "{{ trigger.git-push.repository }}")
+    }
+
     container("Read gradle.properties", "amazoncorretto:17-alpine") {
         kotlinScript { api ->
             // Do not use workDir to get the path to the working directory in a shellScript or kotlinScript.
@@ -105,7 +113,7 @@ job("Code format check, quality check and publish") {
                 // image labels
                 labels["vendor"] = "{{ developer.name }}"
 
-                val spacePackagesUrl = "{{ jetbrains.space.packages.url }}/{{ image.name }}"
+                val spacePackagesUrl = "{{ jetbrains.space.packages.url }}/{{ image }}"
 
                 // image tags
                 tags {
@@ -138,7 +146,7 @@ job("Code format check, quality check and publish") {
                 // image labels
                 labels["vendor"] = "{{ developer.name }}"
 
-                val dockerHubRepository = "{{ dockerhub.username }}/{{ image.name }}"
+                val dockerHubRepository = "{{ dockerhub.username }}/{{ image }}"
                 tags {
                     +"$dockerHubRepository:{{ image.tag }}"
                     +"$dockerHubRepository:latest"
