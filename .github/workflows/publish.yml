@@ -95,7 +95,6 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
-          fail-on-cache-miss: false
 
       #      - name: Cache folder content
       #        run: |
@@ -129,7 +128,9 @@ jobs:
             DEVELOPER_EMAIL=${{ steps.gradle-properties.outputs['developer.email'] }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          labels: |
+            ${{ steps.meta.outputs.labels }}
+            org.opencontainers.image.vendor=${{ steps.gradle-properties.outputs['developer.name'] }}
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
           cache-from: type=local,src=/tmp/.buildx-cache
 
