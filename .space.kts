@@ -33,7 +33,7 @@ job("Code format check, quality check and publish") {
     // Users will be able to redefine these parameters in custom job run.
     // See the 'Customize job run' section
     parameters {
-        text("image", "{{ trigger.git-push.repository }}")
+        text("image", "{{ run:trigger.git-push.repository }}")
     }
 
     container("Read gradle.properties", "amazoncorretto:17-alpine") {
