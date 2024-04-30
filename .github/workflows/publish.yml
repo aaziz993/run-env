@@ -121,7 +121,7 @@ jobs:
         uses: docker/build-push-action@v5.3.0
         with:
           context: .
-          builder: ${{ steps.buildx.outputs.name }}
+#          builder: ${{ steps.buildx.outputs.name }}
           build-args: |
             BASE_IMAGE=${{ steps.gradle-properties.outputs['image.base.image'] }}
             DEVELOPER_NAME=${{ steps.gradle-properties.outputs['developer.name'] }}
