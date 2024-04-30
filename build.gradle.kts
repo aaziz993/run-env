@@ -254,9 +254,6 @@ sonarqube {
     }
 }
 
-
-println("Ihaveastring".substringAfterLast("_", ""))
-
 docker {
     url = providers.gradleProperty("docker.url").getOrElse(
         if (os.isWindows) {
