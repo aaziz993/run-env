@@ -125,8 +125,8 @@ jobs:
           push: true
           tags: |
             ${{ steps.meta.outputs.tags }}
-            ${{ env.REGISTRY }}/${{ steps.gradle-properties.outputs['image.name'] }}:${{ steps.image-tag.outputs['image.tag'] }}
-            ${{ env.REGISTRY }}/${{ steps.gradle-properties.outputs['image.name'] }}:latest
+            ${{ env.REGISTRY }}/${{ github.actor }}/${{ steps.gradle-properties.outputs['image.name'] }}:${{ steps.image-tag.outputs['image.tag'] }}
+            ${{ env.REGISTRY }}/${{ github.actor }}/${{ steps.gradle-properties.outputs['image.name'] }}:latest
           labels: |
             ${{ steps.meta.outputs.labels }}
             org.opencontainers.image.vendor=${{ steps.gradle-properties.outputs['developer.name'] }}
