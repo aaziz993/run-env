@@ -36,7 +36,7 @@ job("Code format check, quality check and publish") {
         text("image", "{{ run:trigger.git-push.repository }}")
     }
 
-    container("Read gradle.properties", "amazoncorretto:17-alpine") {
+    container("Read gradle.properties", "gradle") {
         kotlinScript { api ->
             // Do not use workDir to get the path to the working directory in a shellScript or kotlinScript.
             // Instead, use the JB_SPACE_WORK_DIR_PATH environment variable.
@@ -75,7 +75,7 @@ job("Code format check, quality check and publish") {
         }
     }
 
-    container("Spotless code format check", "amazoncorretto:17-alpine") {
+    container("Spotless code format check", "gradle") {
         shellScript {
             content = """
                 add-apt-repository ppa:chris-lea/munin-plugins
@@ -86,7 +86,7 @@ job("Code format check, quality check and publish") {
         }
     }
 
-    container("Sonar continuous inspection of code quality and security", "amazoncorretto:17-alpine") {
+    container("Sonar continuous inspection of code quality and security", "gradle") {
         env["SONAR_TOKEN"] = "{{ project:sonar.token }}"
         shellScript {
             content = """
