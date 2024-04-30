@@ -32,7 +32,17 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // Space Packages releases
+        maven { url = uri("https://maven.pkg.jetbrains.space/aaziz93/p/aaziz-93/releases") }
+        // Space Packages snapshots
+        maven { url = uri("https://maven.pkg.jetbrains.space/aaziz93/p/aaziz-93/snapshots") }
+        // Github Packages
+        maven { url = uri("https://maven.pkg.github.com/aaziz993") }
     }
+}
+
+plugins {
+    id("org.jetbrains.amper.settings.plugin").version("0.2.3-dev-473")
 }
 
 rootProject.name = providers.gradleProperty("image.name").get()

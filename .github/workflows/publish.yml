@@ -16,7 +16,6 @@ on:
 # Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:
   REGISTRY: ghcr.io
-  IMAGE: ${{ github.repository }}
 
 # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
 jobs:
@@ -71,6 +70,7 @@ jobs:
             echo "$image_version$image_version_suffix"
           )"
 
+          echo "image=${{ github.actor }}/${{ steps.gradle-properties.outputs['image.name'] }}" >> "$GITHUB_OUTPUT"
           echo "image.tag=$image_tag" >> "$GITHUB_OUTPUT"
 
       - name: 🔬 Spotless code format check
@@ -109,7 +109,7 @@ jobs:
         uses: docker/metadata-action@v5.5.1
         id: meta
         with:
-          images: "${{ env.REGISTRY }}/${{ env.IMAGE }}"
+          images: "${{ env.REGISTRY }}/${{ steps.gradle-properties.outputs.image }}"
 
       # This step uses the `docker/build-push-action` action to build the image, based on your repository's `Dockerfile`. If the build succeeds, it pushes the image to GitHub Packages.
       # It uses the `context` parameter to define the build's context as the set of files located in the specified path. For more information, see "[Usage](https://github.com/docker/build-push-action#usage)" in the README of the `docker/build-push-action` repository.
@@ -126,8 +126,8 @@ jobs:
           push: true
           tags: |
             ${{ steps.meta.outputs.tags }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ steps.image-tag.outputs['image.tag'] }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE }}:latest
+            ${{ env.REGISTRY }}/${{ steps.gradle-properties.outputs.image }}:${{ steps.image-tag.outputs['image.tag'] }}
+            ${{ env.REGISTRY }}/${{ steps.gradle-properties.outputs.image }}:latest
           labels: |
             ${{ steps.meta.outputs.labels }}
             org.opencontainers.image.vendor=${{ steps.gradle-properties.outputs['developer.name'] }}

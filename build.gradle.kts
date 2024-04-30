@@ -41,6 +41,7 @@ import org.gradle.internal.os.OperatingSystem
 // Top-level build file where you can add configuration options common to all subprojects/modules.
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
+    id("org.jetbrains.kotlinx.kover")
     alias(libs.plugins.spotless)
     alias(libs.plugins.sonarqube)
     alias(libs.plugins.docker.remote.api)
@@ -48,7 +49,9 @@ plugins {
 
 val os: OperatingSystem = OperatingSystem.current()
 
-val localProperties = project.rootProject.file("local.properties").let { file ->
+val buildDirectoryName: String = layout.buildDirectory.asFile.get().name
+
+val localProperties: Properties = project.rootProject.file("local.properties").let { file ->
     Properties().apply {
         if (file.exists()) {
             load(file.reader())
@@ -95,6 +98,78 @@ allprojects {
     else {
         "$projectVersion$versionSuffix"
     }
+}
+
+koverReport {
+    filters {
+        excludes {
+            classes("com.baeldung.code.not.covered")
+        }
+    }
+
+    verify {
+        rule {
+            isEnabled = true
+            bound {
+                minValue = 80 // Minimum coverage percentage
+            }
+        }
+    }
+}
+
+tasks.create("generateKoverReport", Task::class) {
+    dependsOn("functionalTestDockerContainer", "koverHtmlReport", "koverXmlReport")
+}
+
+tasks.create("copyDockerfile", Copy::class) {
+    from("Dockerfile")
+    into(layout.buildDirectory)
+}
+
+tasks.create("buildDockerImage", DockerBuildImage::class) {
+    doNotTrackState("")
+    inputDir = layout.buildDirectory
+    buildArgs = mapOf(
+        "BASE_IMAGE" to providers.gradleProperty("image.base.image").get(),
+        "DEVELOPER_NAME" to providers.gradleProperty("developer.name").get(),
+        "DEVELOPER_EMAIL" to providers.gradleProperty("developer.email").get(),
+    )
+    images.add("$dockerhubUsername/${rootProject.name}:$version")
+    images.add("$dockerhubUsername/${rootProject.name}:latest")
+    if (System.getenv().containsKey("GITHUB_REF_NAME")) {
+        // The GITHUB_REF_NAME provide the reference name.
+        images.add("$dockerhubUsername/${rootProject.name}:${System.getenv("GITHUB_REF_NAME")}")
+    }
+    dependsOn("copyDockerfile")
+}
+
+tasks.create("pushDockerImage", DockerPushImage::class) {
+    dependsOn("buildDockerImage")
+    images.add("$dockerhubUsername/${rootProject.name}")
+}
+
+val createDockerContainer by tasks.creating(DockerCreateContainer::class) {
+    dependsOn("pushDockerImage")
+    image = "$dockerhubUsername/${rootProject.name}"
+    portSpecs.add(providers.gradleProperty("image.container.port"))
+}
+
+val startDockerContainer by tasks.creating(DockerStartContainer::class) {
+    dependsOn("createDockerContainer")
+    targetContainerId(createDockerContainer.containerId)
+}
+
+val stopDockerContainer by tasks.creating(DockerStopContainer::class) {
+    targetContainerId(createDockerContainer.containerId)
+}
+
+tasks.create("functionalTestDockerContainer", Task::class) {
+    dependsOn(startDockerContainer)
+    finalizedBy(stopDockerContainer, "generateKoverReport")
+}
+
+tasks.clean {
+    delete.add(buildDirectoryName)
 }
 
 spotless {
@@ -175,6 +250,7 @@ sonarqube {
             "sonar.projectKey",
             "${providers.gradleProperty("sonar.organization").get()}_${rootProject.name}",
         )
+        property("sonar.coverage.jacoco.xmlReportPaths", providers.gradleProperty("sonar.coverage.jacoco.xml.report.paths").get())
     }
 }
 
@@ -209,51 +285,4 @@ docker {
         }
         email = providers.gradleProperty("dockerhub.email")
     }
-}
-
-tasks.create("copyDockerfile", Copy::class) {
-    from("Dockerfile")
-    into(layout.buildDirectory)
-}
-
-tasks.create("buildDockerImage", DockerBuildImage::class) {
-    doNotTrackState("")
-    inputDir = layout.buildDirectory
-    buildArgs = mapOf(
-        "BASE_IMAGE" to providers.gradleProperty("image.base.image").get(),
-        "DEVELOPER_NAME" to providers.gradleProperty("developer.name").get(),
-        "DEVELOPER_EMAIL" to providers.gradleProperty("developer.email").get(),
-    )
-    images.add("$dockerhubUsername/${rootProject.name}:$version")
-    images.add("$dockerhubUsername/${rootProject.name}:latest")
-    if (System.getenv().containsKey("GITHUB_REF_NAME")) {
-        // The GITHUB_REF_NAME provide the reference name.
-        images.add("$dockerhubUsername/${rootProject.name}:${System.getenv("GITHUB_REF_NAME")}")
-    }
-    dependsOn("copyDockerfile")
-}
-
-tasks.create("pushDockerImage", DockerPushImage::class) {
-    dependsOn("buildDockerImage")
-    images.add("$dockerhubUsername/${rootProject.name}")
-}
-
-val createDockerContainer by tasks.creating(DockerCreateContainer::class) {
-    dependsOn("pushDockerImage")
-    image = "$dockerhubUsername/${rootProject.name}"
-    portSpecs.add(providers.gradleProperty("image.container.port"))
-}
-
-val startDockerContainer by tasks.creating(DockerStartContainer::class) {
-    dependsOn("createDockerContainer")
-    targetContainerId(createDockerContainer.containerId)
-}
-
-val stopDockerContainer by tasks.creating(DockerStopContainer::class) {
-    targetContainerId(createDockerContainer.containerId)
-}
-
-tasks.create("functionalTestDockerContainer", Test::class) {
-    dependsOn(startDockerContainer)
-    finalizedBy(stopDockerContainer)
 }

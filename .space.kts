@@ -28,14 +28,6 @@ job("Code format check, quality check and publish") {
         }
     }
 
-    // To get a parameter in a job, specify its name in a string inside double curly braces: "{{ my-param }}".
-    // You can do this in any string inside any DSL block excluding startOn, git, and kotlinScript.
-    // Users will be able to redefine these parameters in custom job run.
-    // See the 'Customize job run' section
-    parameters {
-        text("image", "{{ run:trigger.git-push.repository }}")
-    }
-
     container("Read gradle.properties", "gradle") {
         kotlinScript { api ->
             // Do not use workDir to get the path to the working directory in a shellScript or kotlinScript.
@@ -101,8 +93,12 @@ job("Code format check, quality check and publish") {
     parallel {
         host("Publish to Space Packages") {
             dockerBuildPush {
+                val spacePackage = "{{ jetbrains.space.packages.url }}/{{ image.name }}"
+
+                // Working directory
                 context = "."
 
+                // Docker file path
                 file = "./Dockerfile"
 
                 // Arguments passed to Dockerfile
@@ -110,15 +106,13 @@ job("Code format check, quality check and publish") {
                 args["DEVELOPER_NAME"] = "{{ developer.name }}"
                 args["DEVELOPER_EMAIL"] = "{{ developer.email }}"
 
-                // image labels
+                // Image labels
                 labels["vendor"] = "{{ developer.name }}"
 
-                val spacePackagesUrl = "{{ jetbrains.space.packages.url }}/{{ image }}"
-
-                // image tags
+                // Image tags
                 tags {
-                    +"$spacePackagesUrl:{{ image.tag }}"
-                    +"$spacePackagesUrl:latest"
+                    +"$spacePackage:{{ image.tag }}"
+                    +"$spacePackage:latest"
                 }
             }
         }
@@ -134,8 +128,12 @@ job("Code format check, quality check and publish") {
             }
 
             dockerBuildPush {
+                val dockerHubRepository = "{{ dockerhub.username }}/{{ image.name }}"
+
+                // Working directory
                 context = "."
 
+                // Docker file path
                 file = "./Dockerfile"
 
                 // Arguments passed to Dockerfile
@@ -143,10 +141,10 @@ job("Code format check, quality check and publish") {
                 args["DEVELOPER_NAME"] = "{{ developer.name }}"
                 args["DEVELOPER_EMAIL"] = "{{ developer.email }}"
 
-                // image labels
+                // Image labels
                 labels["vendor"] = "{{ developer.name }}"
 
-                val dockerHubRepository = "{{ dockerhub.username }}/{{ image }}"
+                // Image tags
                 tags {
                     +"$dockerHubRepository:{{ image.tag }}"
                     +"$dockerHubRepository:latest"

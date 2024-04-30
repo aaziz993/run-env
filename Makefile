@@ -30,5 +30,9 @@ stop: # Stop docker image
 test: # Functional test docker image
 	chmod 777 -R scripts/ && ./scripts/test.sh
 
+
+cover-report: # Generate code coverage report
+	chmod 777 -R scripts/ && ./scripts/test.sh
+
 clean: # Clean all
 	chmod 777 -R scripts/ && ./scripts/clean.sh
