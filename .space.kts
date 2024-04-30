@@ -124,12 +124,11 @@ job("Code format check, quality check and publish") {
         }
 
         host("Publish to DockerHub") {
-            val key="{{ jetbrains.space.docker.registry.connection.key }}"
             // Before running the scripts, the host machine will log in to
             // the registries specified in connections.
             dockerRegistryConnections {
                 // specify connection key
-                +key
+                +"dockerhub_connection"
                 // multiple connections are supported
                 // +"one_more_connection"
             }

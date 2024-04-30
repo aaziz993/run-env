@@ -40,5 +40,5 @@
 ## How do I publish it with CI/CD?
 
 1. In Github Actions nothing to do.
-2. In <b>Jetbrains Space Automation</b> create connection with key ``docker_hub`` in Project -> Settings -> Docker
+2. In <b>Jetbrains Space Automation</b> create connection with key ```dockerhub_connection``` in Project -> Settings -> Docker
    Registry Connections. See [.space.kts](.space.kts) publish script.
