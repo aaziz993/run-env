@@ -128,7 +128,7 @@ job("Code format check, quality check and publish") {
             // the registries specified in connections.
             dockerRegistryConnections {
                 // specify connection key
-                +"docker_hub"
+                +"{{ jetbrains.space.dockerhub.registry.connection.key }}"
                 // multiple connections are supported
                 // +"one_more_connection"
             }

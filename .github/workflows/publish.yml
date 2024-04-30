@@ -73,13 +73,13 @@ jobs:
 
           echo "image.tag=$image_tag" >> "$GITHUB_OUTPUT"
 
-      #      - name: 🔬 Spotless code format check
-      #        run: make format-check
-      #
-      #      - name: 🔬 Sonar continuous inspection of code quality and security
-      #        env:
-      #          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #        run: make quality-check
+      - name: 🔬 Spotless code format check
+        run: make format-check
+
+      - name: 🔬 Sonar continuous inspection of code quality and security
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: make quality-check
 
       # Add support for more platforms with QEMU (optional)
       # https://github.com/docker/setup-qemu-action

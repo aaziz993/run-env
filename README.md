@@ -1,8 +1,11 @@
-# Default image Ubuntu latest LTS version. For the moment Ubuntu Noble (24.04)
+# What is default base image?
 
-## Issue
+1. In Dockerfile: Ubuntu latest LTS version. Ubuntu latest LTS for the moment is not supported by terraform.
+   See [Dockerfile](Dockerfile).
+2. In Github Actions: Ubuntu Jammy. See [publish.yaml](.github/workflows/publish.yml).
+3. In Jetbrains Space Automation: Ubuntu Jammy. See [.space.kts](.space.kts).
 
-### It is not supported by terraform. Therefore set other Ubuntu version (e.g. ubuntu:jammy) by argument (BASE_IMAGE) during build.
+### Ubuntu latest LTS is not supported by terraform.
 
 ## What are installed?
 
@@ -24,10 +27,18 @@
 16. Terraform
 17. Terraspace
 
-## VERSIONING
+## How to provide configurations
 
-1. For JDK version can be provided by environment variable (JDK_VERSION)
-2. For Gradle version can be provided by environment variable (GRADLE_VERSION)
-3. For AndroidSDK version can be provided by environment variable (ANDROID_SDK_VERSION)
-4. For Android build tools version can be provided by environment variable (ANDROID_BUILD_TOOLS_VERSION)
-5. Other version environment variables see in [Dockerfile](Dockerfile)
+1. By environment variables. See [Dockerfile](Dockerfile) and [build.gradle.kts](build.gradle.kts).
+2. By [gradle.properties](gradle.properties).
+
+## How do I publish it manually?
+
+1. Install docker
+2. Run ```make publish-dockerhub```
+
+## How do I publish it with CI/CD?
+
+1. In Github Actions nothing to do.
+2. In <b>Jetbrains Space Automation</b> create connection with key ``docker_hub`` in Project -> Settings -> Docker
+   Registry Connections. See [.space.kts](.space.kts) publish script.
