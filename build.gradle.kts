@@ -20,6 +20,8 @@ import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
 import com.diffplug.spotless.LineEnding
 import java.util.*
+import kotlinx.kover.gradle.plugin.dsl.AggregationType
+import kotlinx.kover.gradle.plugin.dsl.MetricType
 import org.gradle.internal.os.OperatingSystem
 
 /*
@@ -66,38 +68,67 @@ else {
     providers.gradleProperty("dockerhub.username").get()
 }
 
-val projectVersion = providers.gradleProperty("image.version").get()
-
-val projectVersionSnapshotSuffix: String = providers.gradleProperty("image.version.snapshot.suffix").get()
+val versionSnapshot: Boolean = providers.gradleProperty("image.version.snapshot").get().toBoolean()
 
 allprojects {
     group = providers.gradleProperty("image.group").get()
 
-    val versionSuffix = "${
-        if (System.getenv().containsKey("GITHUB_RUN_NUMBER")) {
-            // The GITHUB_RUN_NUMBER A unique number for each run of a particular workflow in a repository.
-            // This number begins at 1 for the workflow's first run, and increments with each new run.
-            // This number does not change if you re-run the workflow run.
-            ".${System.getenv("GITHUB_RUN_NUMBER")}"
+    version = "${
+        providers.gradleProperty("image.version.major").get()
+    }.${
+        providers.gradleProperty("image.version.minor").get()
+    }.${
+        providers.gradleProperty("image.version.patch").get()
+    }${
+        if (providers.gradleProperty("github.actions.versioning.branch.name").get().toBoolean() &&
+            System.getenv()
+                .containsKey("GITHUB_REF_NAME")
+        ) {
+            // The GITHUB_REF_NAME provide the reference name.
+            "-${System.getenv("GITHUB_REF_NAME")}"
         }
         else {
             ""
         }
     }${
-        if (System.getenv().containsKey("JB_SPACE_EXECUTION_NUMBER")) {
-            ".${System.getenv("JB_SPACE_EXECUTION_NUMBER")}"
+        if (providers.gradleProperty("github.actions.versioning.run.number").get().toBoolean() &&
+            System.getenv()
+                .containsKey("GITHUB_RUN_NUMBER")
+        ) {
+            // The GITHUB_RUN_NUMBER A unique number for each run of a particular workflow in a repository.
+            // This number begins at 1 for the workflow's first run, and increments with each new run.
+            // This number does not change if you re-run the workflow run.
+            "-${System.getenv("GITHUB_RUN_NUMBER")}"
         }
         else {
             ""
         }
+    }${
+        if (providers.gradleProperty("jetbrains.space.automation.versioning.branch.name").get().toBoolean() &&
+            System.getenv()
+                .containsKey("JB_SPACE_REPOSITORY_BRANCH_NAME")
+        ) {
+            // The GITHUB_REF_NAME provide the reference name.
+            "-${System.getenv("JB_SPACE_REPOSITORY_BRANCH_NAME")}"
+        }
+        else {
+            ""
+        }
+    }${
+        if (providers.gradleProperty("jetbrains.space.automation.versioning.run.number").get().toBoolean() &&
+            System.getenv()
+                .containsKey("JB_SPACE_EXECUTION_NUMBER")
+        ) {
+            "-${System.getenv("JB_SPACE_EXECUTION_NUMBER")}"
+        }
+        else {
+            ""
+        }
+    }${
+        providers.gradleProperty("image.version.suffix").get()
+    }${
+        if (versionSnapshot) "-SNAPSHOT" else ""
     }"
-
-    version = if (projectVersion.endsWith(projectVersionSnapshotSuffix)) {
-        "${projectVersion.removeSuffix(projectVersionSnapshotSuffix)}$versionSuffix$projectVersionSnapshotSuffix"
-    }
-    else {
-        "$projectVersion$versionSuffix"
-    }
 }
 
 koverReport {
@@ -111,7 +142,12 @@ koverReport {
         rule {
             isEnabled = true
             bound {
-                minValue = 80 // Minimum coverage percentage
+                minValue = providers.gradleProperty("kover.verify.rule.min.value").orNull?.toInt()
+                maxValue = providers.gradleProperty("kover.verify.rule.max.value").orNull?.toInt()
+                metric = providers.gradleProperty("kover.verify.rule.metric")
+                    .orNull?.let { MetricType.valueOf(it.uppercase()) } ?: MetricType.LINE
+                aggregation = providers.gradleProperty("kover.verify.rule.aggregation")
+                    .orNull?.let { AggregationType.valueOf(it.uppercase()) } ?: AggregationType.COVERED_PERCENTAGE
             }
         }
     }
@@ -151,7 +187,7 @@ tasks.create("pushDockerImage", DockerPushImage::class) {
 val createDockerContainer by tasks.creating(DockerCreateContainer::class) {
     dependsOn("pushDockerImage")
     image = "$dockerhubUsername/${rootProject.name}"
-    portSpecs.add(providers.gradleProperty("image.container.port"))
+    portSpecs.add(providers.gradleProperty("image.container.port").get())
 }
 
 val startDockerContainer by tasks.creating(DockerStartContainer::class) {
@@ -198,7 +234,7 @@ spotless {
         // Will add a newline character to the end of files content
         endWithNewline()
         // Specifies license header file
-        licenseHeaderFile(providers.gradleProperty("spotless.kts.license.header.file"), "(^(?![\\/ ]\\*).*$)")
+        licenseHeaderFile(providers.gradleProperty("spotless.kts.license.header.file").get(), "(^(?![\\/ ]\\*).*$)")
     }
 
     format("xml") {
@@ -212,7 +248,7 @@ spotless {
         // Will add a newline character to the end of files content
         endWithNewline()
         // Specifies license header file
-        licenseHeaderFile(providers.gradleProperty("spotless.xml.license.header.file"), "(<[^!?])")
+        licenseHeaderFile(providers.gradleProperty("spotless.xml.license.header.file").get(), "(<[^!?])")
     }
 
     // Additional configuration for Kotlin Gradle scripts
@@ -272,7 +308,7 @@ docker {
         }
     }
     registryCredentials {
-        url = providers.gradleProperty("dockerhub.url")
+        url = providers.gradleProperty("dockerhub.url").get()
         username = dockerhubUsername
         password = if (System.getenv().containsKey("DOCKERHUB_PASSWORD")) {
             System.getenv("DOCKERHUB_PASSWORD")
@@ -280,6 +316,6 @@ docker {
         else {
             localProperties.getProperty("dockerhub.password")
         }
-        email = providers.gradleProperty("dockerhub.email")
+        email = providers.gradleProperty("dockerhub.email").get()
     }
 }

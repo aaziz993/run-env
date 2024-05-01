@@ -54,24 +54,27 @@ jobs:
       - name: 🧪 Create image tag
         id: image-tag
         run: |
-          image_version="${{ steps.gradle-properties.outputs['image.version'] }}"
-
-          image_version_snapshot_suffix="${{ steps.gradle-properties.outputs['image.version.snapshot.suffix'] }}"
-
-          image_version_suffix="$(
-            [ "${{ steps.gradle-properties.outputs['github.actions.versioning.run.number'] }}" == "true" ] &&
-            echo ".${{ github.run_number }}"
-            echo
-          )"
-
-          image_tag="$(
-            [ "$image_version" == *"$image_version_snapshot_suffix" ] &&
-            echo "$image_version$image_version_suffix$image_version_snapshot_suffix" ||
-            echo "$image_version$image_version_suffix"
-          )"
-
           echo "image=${{ github.actor }}/${{ steps.gradle-properties.outputs['image.name'] }}" >> "$GITHUB_OUTPUT"
-          echo "image.tag=$image_tag" >> "$GITHUB_OUTPUT"
+
+          echo "image.tag=${{ steps.gradle-properties.outputs['image.version.major'] }}\
+          .${{ steps.gradle-properties.outputs['image.version.minor'] }}\
+          .${{ steps.gradle-properties.outputs['image.version.patch'] }}\
+          $(
+          [ "${{ steps.gradle-properties.outputs['github.actions.versioning.branch.name'] }}" == "true" ] &&
+              echo "-${{ github.ref_name }}" ||
+              echo
+          )\
+          $(
+            [ "${{ steps.gradle-properties.outputs['github.actions.versioning.run.number'] }}" == "true" ] &&
+              echo "-${{ github.run_number }}" ||
+              echo
+          )\
+          -${{ steps.gradle-properties.outputs['image.version.suffix'] }}\
+          $(
+            [ "${{ steps.gradle-properties.outputs['project.version.snapshot'] }}" == "true" ] &&
+              echo "-SNAPSHOT" ||
+              echo
+          )" >> "$GITHUB_OUTPUT"
 
       - name: 🔬 Spotless code format check
         run: make format-check

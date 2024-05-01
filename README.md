@@ -1,10 +1,10 @@
-[![official project](http://jb.gg/badges/official.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
+![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
 
+[![official project](http://jb.gg/badges/official.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
 
 ![Gradle](https://img.shields.io/badge/Gradle-02303A.svg?style=for-the-badge&logo=Gradle&logoColor=white)
 ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
 
-![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
 
 ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
 
@@ -20,8 +20,6 @@
    See [Dockerfile](Dockerfile).
 2. In Github Actions: Ubuntu Jammy. See [publish.yaml](.github/workflows/publish.yml).
 3. In Jetbrains Space Automation: Ubuntu Jammy. See [.space.kts](.space.kts).
-
-### Ubuntu latest LTS is not supported by terraform.
 
 ## What are installed?
 
@@ -43,6 +41,8 @@
 16. Terraform
 17. Terraspace
 
+# Publish to Github Packages, Space Packages and DockerHub.
+
 ## How to provide configurations
 
 1. By environment variables. See [Dockerfile](Dockerfile) and [build.gradle.kts](build.gradle.kts).
@@ -55,6 +55,6 @@
 
 ## How do I publish it with CI/CD?
 
-1. In Github Actions nothing to do.
+1. In Github Actions nothing to do. It publishes docker image to Github Packages. See [publish.yaml](.github/workflows/publish.yml)
 2. In <b>Jetbrains Space Automation</b> create connection with key ```dockerhub_connection``` in Project -> Settings -> Docker
-   Registry Connections. See [.space.kts](.space.kts) publish script.
+   Registry Connections. It publishes image to Space Packages and DockerHub See [.space.kts](.space.kts) publish script.
